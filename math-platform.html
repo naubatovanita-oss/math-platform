@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аксиома — платформа для учеников по математике</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FFF8CA;
+    --panel: #FFFFFF;
+    --panel-light: #FCEFAE;
+    --panel-border: #E9DA8E;
+    --gold: #6B0B0C;
+    --gold-soft: #9A3230;
+    --teal: #3E6B78;
+    --text: #2D120D;
+    --muted: #8A7360;
+    --rose: #6B0B0C;
+    --forest: #2D120D;
+    --forest-light: #4A2318;
+    --arabic-dark: #6B0B0C;
+    --cream-text: #FFF8CA;
+    --cream-muted: #CDE3E8;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background: radial-gradient(ellipse at top, #FFFCE8 0%, #FBEFAF 75%);
+    color: var(--text);
+    font-family:'Manrope', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .arabic{ font-family:'JetBrains Mono', monospace; font-weight:700; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  /* ambient geometric pattern */
+  .pattern-bg{
+    position:fixed; inset:0; z-index:0; opacity:0.045; pointer-events:none;
+    background-image:
+      repeating-linear-gradient(45deg, var(--forest) 0, var(--forest) 1px, transparent 1px, transparent 44px),
+      repeating-linear-gradient(-45deg, var(--forest) 0, var(--forest) 1px, transparent 1px, transparent 44px);
+  }
+
+  .app{ position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; }
+
+  /* ---------- LOGIN SCREEN ---------- */
+  #loginScreen{
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:24px; text-align:center;
+    background: radial-gradient(ellipse at top, #4A2318 0%, #2D120D 60%, #1B0C08 100%);
+  }
+  .hero-word{
+    font-family:'JetBrains Mono', monospace; font-size:clamp(48px,10vw,100px); font-weight:700;
+    color:var(--gold-soft);
+    letter-spacing:2px;
+    opacity:0;
+    animation: heroReveal 1.4s ease forwards;
+    text-shadow: 0 0 40px rgba(201,162,75,0.25);
+  }
+  @keyframes heroReveal{
+    0%{ opacity:0; transform:translateY(18px) scale(0.96); filter:blur(6px); }
+    100%{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+  }
+  .hero-sub{
+    margin-top:10px; color:var(--cream-muted); font-size:15px; letter-spacing:0.5px;
+    opacity:0; animation: fadeUp 1s ease 0.6s forwards;
+  }
+  .hero-title{
+    margin-top:26px; font-size:26px; font-weight:800; letter-spacing:-0.3px; color:var(--cream-text);
+    opacity:0; animation: fadeUp 1s ease 0.8s forwards;
+  }
+  .hero-desc{
+    margin-top:8px; color:var(--cream-muted); font-size:14.5px; max-width:380px;
+    opacity:0; animation: fadeUp 1s ease 1s forwards;
+  }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+  .login-card{
+    margin-top:34px; background:var(--panel); border:1px solid var(--panel-border);
+    border-radius:var(--radius); padding:28px; width:100%; max-width:340px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    opacity:0; animation: fadeUp 1s ease 1.2s forwards;
+  }
+  .field{ text-align:left; margin-bottom:16px; }
+  .field label{ display:block; font-size:12.5px; color:var(--muted); margin-bottom:6px; letter-spacing:0.3px; }
+  .field input{
+    width:100%; background:var(--panel-light); border:1px solid var(--panel-border);
+    border-radius:9px; padding:11px 13px; color:var(--text); font-size:15px; font-family:inherit;
+    outline:none; transition:border-color 0.2s;
+  }
+  .field input:focus{ border-color:var(--gold); }
+  .btn-primary{
+    width:100%; background:linear-gradient(135deg, var(--gold), #8B1A1A); color:#FFF3D6;
+    border:none; border-radius:9px; padding:12px; font-size:15px; font-weight:700;
+    cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; font-family:inherit;
+  }
+  .btn-primary:hover{ transform:translateY(-1px); box-shadow:0 8px 20px rgba(201,162,75,0.25); }
+  .btn-primary:active{ transform:translateY(0); }
+  .login-error{ color:var(--rose); font-size:13px; margin-top:10px; min-height:16px; }
+  .login-hint{ color:var(--muted); font-size:12px; margin-top:16px; line-height:1.5; }
+  .role-toggle{ display:flex; gap:6px; background:var(--panel-light); border-radius:10px; padding:4px; margin-bottom:20px; }
+  .role-btn{
+    flex:1; background:none; border:none; color:var(--muted); padding:9px; border-radius:7px;
+    font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s;
+  }
+  .role-btn.active{ background:var(--gold); color:#FFF3D6; }
+  .login-form{ display:none; }
+  .login-form.active{ display:block; }
+
+  /* ---------- ADMIN PANEL ---------- */
+  #adminScreen{ display:none; min-height:100vh; flex-direction:column; }
+  .admin-main{ flex:1; padding:26px 20px 60px; max-width:820px; width:100%; margin:0 auto; }
+  .admin-card{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:14px;
+    padding:22px; margin-bottom:24px;
+  }
+  .admin-card-title{ font-size:16px; font-weight:800; margin-bottom:14px; }
+  .add-student-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+  .add-student-row .field{ margin-bottom:0; flex:1; min-width:160px; }
+  .add-student-row .btn-primary{ width:auto; padding:11px 20px; white-space:nowrap; }
+  .credential-box{
+    margin-top:16px; background:var(--panel-light); border:1px dashed var(--teal);
+    border-radius:10px; padding:14px 16px; display:none;
+  }
+  .credential-box.show{ display:block; }
+  .credential-row{ display:flex; justify-content:space-between; align-items:center; font-size:14px; margin-bottom:6px; }
+  .credential-row:last-child{ margin-bottom:0; }
+  .credential-row span:first-child{ color:var(--muted); }
+  .credential-row strong{ font-family:'JetBrains Mono', monospace; color:var(--gold-soft); font-size:15px; }
+  .students-table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  .students-table th{ text-align:left; color:var(--muted); font-weight:600; padding:8px 10px; border-bottom:1px solid var(--panel-border); font-size:12px; }
+  .students-table td{ padding:10px 10px; border-bottom:1px solid var(--panel-border); }
+  .students-table tr:last-child td{ border-bottom:none; }
+  .del-student-btn{
+    background:none; border:1px solid var(--panel-border); color:var(--rose);
+    border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer; font-family:inherit;
+  }
+  .del-student-btn:hover{ border-color:var(--rose); }
+  .login-cell{ font-family:'JetBrains Mono', monospace; color:var(--gold-soft); }
+
+  /* ---------- CALENDAR / SCHEDULE ---------- */
+  .cal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .cal-title{ font-size:17px; font-weight:800; text-transform:capitalize; }
+  .cal-nav-btn{
+    background:var(--panel-light); border:1px solid var(--panel-border); color:var(--text);
+    width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:15px;
+  }
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+  .cal-dow{ text-align:center; font-size:11px; color:var(--muted); padding:4px 0 8px; font-weight:600; }
+  .cal-day{
+    position:relative; aspect-ratio:1; background:var(--panel); border:1px solid var(--panel-border);
+    border-radius:9px; padding:6px; cursor:pointer; transition:all 0.15s; display:flex; flex-direction:column;
+  }
+  .cal-day:hover{ border-color:var(--muted); }
+  .cal-day.empty{ background:none; border:none; cursor:default; }
+  .cal-day.today{ border-color:var(--gold); }
+  .cal-day.selected{ box-shadow:0 0 0 2px var(--gold) inset; }
+  .cal-day-num{ font-size:12.5px; color:var(--muted); }
+  .cal-day.today .cal-day-num{ color:var(--gold-soft); font-weight:700; }
+  .cal-day.has-lesson{ background:var(--teal); border-color:var(--teal); }
+  .cal-day.has-lesson.group{ background:var(--gold); border-color:var(--gold); }
+  .cal-day.has-lesson .cal-day-num{ color:rgba(255,255,255,0.85); }
+  .cal-day-time{
+    margin-top:auto; font-family:'JetBrains Mono', monospace; font-weight:800; color:#fff;
+    line-height:1.1; font-size:clamp(13px,2.4vw,17px); word-break:break-word;
+  }
+  .cal-day-count{ margin-top:auto; font-size:11px; font-weight:700; color:#fff; }
+  .day-panel{
+    margin-top:20px; background:var(--panel); border:1px solid var(--panel-border);
+    border-radius:12px; padding:18px;
+  }
+  .day-panel-title{ font-size:14.5px; font-weight:700; margin-bottom:12px; }
+  .lesson-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 12px; background:var(--panel-light); border-radius:9px; margin-bottom:8px; font-size:13.5px;
+  }
+  .lesson-item-info strong{ color:var(--gold-soft); font-family:'JetBrains Mono', monospace; margin-right:8px; }
+  .lesson-item-students{ color:var(--text); }
+  .lesson-item-note{ color:var(--muted); font-size:12px; margin-top:2px; }
+  .lesson-del-btn{
+    background:none; border:1px solid var(--panel-border); color:var(--rose);
+    border-radius:6px; padding:4px 9px; font-size:11.5px; cursor:pointer; font-family:inherit; white-space:nowrap;
+  }
+  .lesson-actions{ display:flex; gap:6px; }
+  .student-check-list{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+  .student-check{
+    display:flex; align-items:center; gap:6px; background:var(--panel-light);
+    border:1px solid var(--panel-border); border-radius:20px; padding:6px 12px; font-size:13px; cursor:pointer;
+  }
+  .student-check.checked{ border-color:var(--teal); color:var(--teal); }
+  .recur-row{ display:flex; align-items:center; gap:10px; margin-top:6px; }
+  .recur-row input[type=checkbox]{ width:16px; height:16px; }
+  .recur-weeks-field{ display:none; align-items:center; gap:8px; }
+  .recur-weeks-field.show{ display:flex; }
+  .recur-weeks-field input{ width:70px; }
+  .admin-subnav{ display:flex; gap:8px; margin-bottom:20px; }
+  .admin-subnav-btn{
+    background:var(--panel); border:1px solid var(--panel-border); color:var(--muted);
+    padding:9px 18px; border-radius:20px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  .admin-subnav-btn.active{ background:var(--panel-light); color:var(--gold-soft); border-color:var(--gold); }
+  .admin-view{ display:none; }
+  .admin-view.active{ display:block; }
+
+  /* ---------- HOMEWORK ---------- */
+  .hw-banner{
+    display:none; margin:16px 20px 0; max-width:900px; margin-left:auto; margin-right:auto;
+    background:linear-gradient(135deg, rgba(201,162,75,0.14), rgba(63,191,173,0.1));
+    border:1px solid var(--gold); border-radius:12px; padding:14px 18px;
+    align-items:flex-start; gap:12px;
+  }
+  .hw-banner.show{ display:flex; }
+  .hw-banner-icon{ font-size:20px; line-height:1; }
+  .hw-banner-body{ flex:1; }
+  .hw-banner-title{ font-size:12.5px; color:var(--gold-soft); font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:3px; }
+  .hw-banner-text{ font-size:14px; line-height:1.4; }
+  .hw-banner-done-btn{
+    background:var(--panel-light); border:1px solid var(--panel-border); color:var(--text);
+    border-radius:8px; padding:7px 13px; font-size:12.5px; cursor:pointer; font-family:inherit; white-space:nowrap;
+  }
+  .hw-banner-done-btn:hover{ border-color:var(--teal); color:var(--teal); }
+  .hw-edit-row{ display:flex; gap:8px; margin-top:8px; }
+  .hw-edit-row input{
+    flex:1; background:var(--panel); border:1px solid var(--panel-border); border-radius:7px;
+    padding:8px 10px; color:var(--text); font-size:13px; font-family:inherit;
+  }
+  .hw-save-btn{
+    background:var(--teal); border:none; color:#0C2A26; border-radius:7px; padding:8px 14px;
+    font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap;
+  }
+  .lesson-hw-text{ margin-top:6px; font-size:12.5px; color:var(--gold-soft); display:flex; align-items:center; gap:6px; }
+  .hw-check{ width:14px; height:14px; }
+
+  /* ---------- HERO ILLUSTRATION ---------- */
+  .hero-illustration{
+    position:relative; border-radius:16px; overflow:hidden; margin-bottom:24px;
+    height:140px; display:flex; align-items:center;
+  }
+  .hero-illustration svg{ position:absolute; inset:0; width:100%; height:100%; }
+  .hero-illustration-text{ position:relative; z-index:1; padding:0 28px; }
+  .hero-illustration-ar{ font-family:'JetBrains Mono', monospace; font-size:34px; color:var(--gold-soft); }
+  .hero-illustration-sub{ color:var(--cream-muted); font-size:13.5px; margin-top:4px; max-width:320px; }
+
+  /* ---------- HOME DASHBOARD ---------- */
+  .home-grid{ display:grid; grid-template-columns:1.4fr 1fr; gap:18px; margin-bottom:18px; }
+  @media (max-width:760px){ .home-grid{ grid-template-columns:1fr; } }
+  .home-card{ background:var(--panel); border:1px solid var(--panel-border); border-radius:16px; padding:22px; }
+  .home-card-dark{ background:linear-gradient(150deg, var(--forest), #1B0C08); color:var(--cream-text); border:none; }
+  .home-card-title{ font-size:14px; font-weight:700; margin-bottom:14px; }
+  .home-card-dark .home-card-title{ color:var(--cream-text); }
+  .home-stat-row{ display:flex; align-items:center; gap:20px; }
+  .home-stat-ring{ position:relative; width:88px; height:88px; flex-shrink:0; }
+  .home-stat-ring svg{ transform:rotate(-90deg); }
+  .home-stat-ring-label{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .home-stat-ring-num{ font-size:19px; font-weight:800; color:var(--gold-soft); }
+  .home-stat-list{ display:flex; flex-direction:column; gap:8px; font-size:12.5px; color:var(--cream-muted); }
+  .home-stat-list strong{ color:var(--cream-text); font-size:15px; display:block; }
+  .home-goal-track{ height:8px; background:var(--panel-light); border-radius:6px; overflow:hidden; margin:10px 0 6px; }
+  .home-goal-fill{ height:100%; background:linear-gradient(90deg, var(--teal), var(--gold)); }
+  .home-goal-label{ font-size:12.5px; color:var(--muted); }
+  .home-continue-row{ display:flex; flex-direction:column; gap:10px; }
+  .home-continue-item{
+    display:flex; justify-content:space-between; align-items:center; background:var(--panel-light);
+    border-radius:11px; padding:13px 15px; gap:10px;
+  }
+  .home-continue-info{ font-size:13.5px; }
+  .home-continue-info strong{ display:block; font-size:14px; margin-bottom:2px; }
+  .home-continue-sub{ color:var(--muted); font-size:12px; }
+  .home-go-btn{
+    background:var(--forest); color:var(--cream-text); border:none; border-radius:8px;
+    padding:8px 14px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap;
+  }
+  .practice-tiles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; }
+  .practice-tile{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:18px;
+    cursor:pointer; transition:all 0.18s; text-align:left;
+  }
+  .practice-tile:hover{ border-color:var(--gold); transform:translateY(-2px); }
+  .practice-tile-icon{ margin-bottom:12px; }
+  .practice-tile-icon svg{ width:26px; height:26px; }
+  .practice-tile-title{ font-size:14.5px; font-weight:700; margin-bottom:3px; }
+  .practice-tile-sub{ font-size:12px; color:var(--muted); }
+
+  /* ---------- CONTENT LISTS (lessons/grammar) ---------- */
+  .content-note{ background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:20px; margin-bottom:14px; }
+  .content-note-title{ font-size:15.5px; font-weight:700; margin-bottom:8px; color:var(--teal); }
+  .content-note-body{ font-size:14px; line-height:1.6; white-space:pre-wrap; }
+
+  /* ---------- LESSON/GRAMMAR CARD GRID ---------- */
+  .lesson-card-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:14px; }
+  .lesson-card{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:14px;
+    padding:20px; cursor:pointer; transition:all 0.18s; text-align:left; position:relative;
+  }
+  .lesson-card:hover{ border-color:var(--gold); transform:translateY(-2px); }
+  .lesson-card-num{ font-size:11px; color:var(--teal); font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:8px; }
+  .lesson-card-title{ font-size:15px; font-weight:700; line-height:1.35; }
+  .lesson-card-icon{ font-size:22px; margin-bottom:10px; }
+  .back-btn{
+    background:none; border:1px solid var(--panel-border); color:var(--muted);
+    border-radius:8px; padding:8px 14px; font-size:13px; cursor:pointer; font-family:inherit; margin-bottom:6px;
+  }
+  .back-btn:hover{ border-color:var(--gold); color:var(--text); }
+  .task-link-btn{
+    display:inline-block; margin-top:10px; background:var(--forest); color:var(--cream-text);
+    border-radius:8px; padding:8px 14px; font-size:12.5px; font-weight:700; text-decoration:none;
+  }
+
+  /* ---------- MATERIALS MANAGEMENT ---------- */
+  .mat-form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+  .mat-form-grid .field{ margin-bottom:0; }
+  .mat-list-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 12px; background:var(--panel-light); border-radius:9px; margin-bottom:8px; font-size:13.5px;
+    gap:10px;
+  }
+  .mat-list-item-body{ flex:1; min-width:0; }
+  .mat-list-cat{ font-size:11px; color:var(--teal); font-weight:700; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:2px; }
+  .mat-list-main{ display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
+  .mat-list-ar{ font-family:'JetBrains Mono', monospace; font-size:18px; color:var(--arabic-dark); }
+  .mat-list-sub{ color:var(--muted); font-size:12px; }
+  .mat-q-options{ margin-top:4px; font-size:12px; color:var(--muted); }
+  .mat-q-correct{ color:var(--teal); font-weight:700; }
+  .mat-seed-btn{
+    background:none; border:1px dashed var(--panel-border); color:var(--muted);
+    border-radius:8px; padding:8px 14px; font-size:12.5px; cursor:pointer; font-family:inherit; margin-bottom:14px;
+  }
+  .mat-seed-btn:hover{ border-color:var(--gold); color:var(--gold-soft); }
+  .radio-row{ display:flex; gap:14px; margin-top:6px; flex-wrap:wrap; }
+  .radio-row label{ display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--muted); cursor:pointer; }
+
+  /* ---------- APP SHELL ---------- */
+  #appScreen{ display:none; min-height:100vh; flex-direction:column; }
+  header.topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 26px; border-bottom:1px solid var(--panel-border);
+    background:rgba(255,255,255,0.75); backdrop-filter:blur(8px);
+    position:sticky; top:0; z-index:10;
+  }
+  .topbar-greeting{ font-size:17px; font-weight:800; }
+  .topbar-greeting-sub{ font-size:12.5px; color:var(--muted); margin-top:2px; font-weight:500; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-word{ font-family:'JetBrains Mono', monospace; font-size:24px; color:var(--arabic-dark); }
+  .brand-name{ font-size:13px; color:var(--muted); }
+  .student-chip{
+    display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--muted);
+  }
+  .student-chip strong{ color:var(--text); }
+  .logout-btn{
+    background:none; border:1px solid var(--panel-border); color:var(--muted);
+    border-radius:7px; padding:6px 11px; font-size:12.5px; cursor:pointer; font-family:inherit;
+  }
+  .logout-btn:hover{ color:var(--text); border-color:var(--muted); }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    background:
+      linear-gradient(180deg, rgba(30,58,43,0.88), rgba(20,42,29,0.94)),
+      url(data:image/jpeg;base64,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);
+    background-size: cover;
+    background-position: center;
+    color: var(--cream-text);
+    width:230px; flex-shrink:0; padding:26px 16px; display:flex; flex-direction:column;
+    position:fixed; top:0; left:0; bottom:0; z-index:20; overflow-y:auto;
+  }
+  .sidebar-brand{ padding:6px 10px 26px; }
+  .sidebar-brand-word{ font-family:'JetBrains Mono', monospace; font-size:26px; color:var(--gold-soft); }
+  .sidebar-brand-sub{ font-size:11px; color:var(--cream-muted); letter-spacing:0.3px; margin-top:2px; }
+  .sidebar-nav{ display:flex; flex-direction:column; gap:3px; flex:1; }
+  .sidebar-tab-btn{
+    display:flex; align-items:center; gap:11px; text-align:left; background:none; border:none;
+    color:#E3D2B0; padding:11px 12px; border-radius:10px; font-size:14px; font-weight:600;
+    cursor:pointer; font-family:inherit; transition:all 0.18s; width:100%;
+  }
+  .sidebar-tab-btn .tab-icon{ width:20px; height:20px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; }
+  .sidebar-tab-btn .tab-icon svg{ width:18px; height:18px; }
+  .sidebar-tab-btn:hover{ background:rgba(255,255,255,0.06); color:var(--cream-text); }
+  .sidebar-tab-btn.active{ background:rgba(255,255,255,0.12); color:var(--cream-text); box-shadow:inset 3px 0 0 var(--gold-soft); }
+  .sidebar-footer{ padding:14px 10px 4px; font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--cream-muted); line-height:1.6; text-align:center; opacity:0.85; }
+  .main-col{ margin-left:230px; flex:1; min-height:100vh; display:flex; flex-direction:column; }
+
+  @media (max-width:860px){
+    .sidebar{
+      position:fixed; top:auto; bottom:0; left:0; right:0; height:auto; width:100%;
+      flex-direction:row; padding:6px 4px; align-items:center; overflow-x:auto; overflow-y:visible;
+    }
+    .sidebar-brand, .sidebar-footer{ display:none; }
+    .sidebar-nav{ flex-direction:row; width:100%; justify-content:space-around; gap:0; }
+    .sidebar-tab-btn{ flex-direction:column; gap:3px; font-size:10.5px; padding:8px 6px; border-radius:9px; white-space:nowrap; }
+    .sidebar-tab-btn.active{ box-shadow:none; background:rgba(255,255,255,0.14); }
+    .main-col{ margin-left:0; padding-bottom:64px; }
+    header.topbar{ position:static; backdrop-filter:none; background:transparent; border-bottom:none; padding:16px 20px 4px; }
+  }
+
+  main{ flex:1; padding:26px 20px 60px; max-width:1180px; width:100%; margin:0 auto; }
+  .section{ display:none; animation: fadeUp 0.4s ease forwards; }
+  .section.active{ display:block; }
+  .section-title{ font-size:22px; font-weight:800; margin-bottom:4px; }
+  .section-desc{ color:var(--muted); font-size:14px; margin-bottom:22px; }
+
+  /* ---------- MULTIPLICATION TABLE ---------- */
+  .letter-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:12px; }
+  .letter-card{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:12px;
+    padding:16px 10px; text-align:center; cursor:pointer; transition:all 0.2s; position:relative;
+  }
+  .letter-card:hover{ border-color:var(--gold); transform:translateY(-2px); }
+  .letter-card.seen::after{
+    content:'✓'; position:absolute; top:6px; right:8px; color:var(--teal); font-size:12px; font-weight:700;
+  }
+  .letter-ar{ font-family:'JetBrains Mono', monospace; font-size:40px; color:var(--arabic-dark); }
+  .letter-translit{ font-size:12px; color:var(--muted); margin-top:6px; }
+  .letter-name{ font-size:11px; color:var(--muted); opacity:0.8; }
+
+  /* ---------- FLASHCARDS ---------- */
+  .category-row{ display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+  .cat-chip{
+    background:var(--panel); border:1px solid var(--panel-border); color:var(--muted);
+    padding:7px 14px; border-radius:20px; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .cat-chip.active{ background:var(--teal); color:#0C2A26; border-color:var(--teal); font-weight:700; }
+  .flash-wrap{ display:flex; flex-direction:column; align-items:center; gap:18px; }
+  .flashcard{
+    width:100%; max-width:380px; height:220px; perspective:1200px; cursor:pointer;
+  }
+  .flashcard-inner{
+    position:relative; width:100%; height:100%; transition:transform 0.5s;
+    transform-style:preserve-3d;
+  }
+  .flashcard.flipped .flashcard-inner{ transform:rotateY(180deg); }
+  .flashcard-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:16px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    border:1px solid var(--panel-border); background:var(--panel); padding:20px;
+  }
+  .flashcard-face.back{ transform:rotateY(180deg); background:var(--panel-light); }
+  .flash-ar{ font-family:'JetBrains Mono', monospace; font-size:46px; color:var(--arabic-dark); }
+  .flash-translit{ color:var(--muted); font-size:14px; }
+  .flash-ru{ font-size:20px; font-weight:700; }
+  .flash-tap-hint{ position:absolute; bottom:12px; font-size:11px; color:var(--muted); opacity:0.6; }
+  .flash-controls{ display:flex; gap:12px; align-items:center; }
+  .flash-nav-btn{
+    background:var(--panel-light); border:1px solid var(--panel-border); color:var(--text);
+    width:38px; height:38px; border-radius:50%; cursor:pointer; font-size:16px;
+  }
+  .flash-progress{ color:var(--muted); font-size:13px; }
+
+  /* ---------- QUIZ ---------- */
+  .quiz-progress-bar{ height:6px; background:var(--panel); border-radius:6px; overflow:hidden; margin-bottom:22px; }
+  .quiz-progress-fill{ height:100%; background:linear-gradient(90deg,var(--teal),var(--gold)); transition:width 0.3s; }
+  .quiz-question{ background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:24px; }
+  .q-arabic{ font-family:'JetBrains Mono', monospace; font-size:30px; color:var(--arabic-dark); margin-bottom:6px; }
+  .q-text{ font-size:16px; margin-bottom:18px; }
+  .q-options{ display:flex; flex-direction:column; gap:10px; }
+  .q-option{
+    background:var(--panel-light); border:1px solid var(--panel-border); color:var(--text);
+    padding:12px 16px; border-radius:9px; text-align:left; cursor:pointer; font-size:14.5px;
+    font-family:inherit; transition:all 0.2s;
+  }
+  .q-option:hover{ border-color:var(--muted); }
+  .q-option.correct{ background:rgba(63,191,173,0.18); border-color:var(--teal); }
+  .q-option.wrong{ background:rgba(217,139,139,0.18); border-color:var(--rose); }
+  .quiz-result{ text-align:center; padding:40px 20px; }
+  .quiz-result-score{ font-size:48px; font-weight:800; color:var(--gold-soft); }
+  .quiz-result-label{ color:var(--muted); margin-top:6px; }
+
+  /* ---------- PROGRESS ---------- */
+  .stat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:26px; }
+  .stat-card{ background:var(--panel); border:1px solid var(--panel-border); border-radius:12px; padding:18px; }
+  .stat-num{ font-size:28px; font-weight:800; color:var(--gold-soft); }
+  .stat-label{ font-size:12.5px; color:var(--muted); margin-top:4px; }
+  .history-item{
+    display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--panel-border);
+    font-size:13.5px; color:var(--muted);
+  }
+  .history-item strong{ color:var(--text); }
+  .empty-state{ text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
+
+  @media (max-width:480px){
+    .letter-grid{ grid-template-columns:repeat(auto-fill, minmax(90px,1fr)); }
+    .letter-ar{ font-size:32px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+  }
+
+  /* ---------- DESKTOP SCALE-UP (larger fonts/cards on wide screens only) ---------- */
+  @media (min-width:861px){
+    .sidebar{ width:250px; padding:32px 20px; }
+    .main-col{ margin-left:250px; }
+    .sidebar-brand-word{ font-size:32px; }
+    .sidebar-brand-sub{ font-size:13.5px; }
+    .sidebar-tab-btn{ font-size:15px; padding:12px 13px; }
+    .sidebar-footer{ font-size:15px; line-height:1.8; padding:18px 10px 4px; }
+    .topbar{ padding:22px 32px; }
+    .topbar-greeting{ font-size:21px; }
+    .topbar-greeting-sub{ font-size:14px; }
+    main{ padding:32px 32px 70px; }
+    .home-card{ padding:28px; }
+    .home-card-title{ font-size:16px; margin-bottom:18px; }
+    .home-stat-ring{ width:104px; height:104px; }
+    .home-stat-ring svg{ width:104px; height:104px; }
+    .home-stat-list{ font-size:14px; gap:11px; }
+    .home-stat-list strong{ font-size:18px; }
+    .home-goal-label{ font-size:14.5px; }
+    .home-continue-item{ padding:16px 18px; }
+    .home-continue-info{ font-size:14.5px; }
+    .home-continue-info strong{ font-size:16px; }
+    .home-continue-sub{ font-size:13px; }
+    .section-title{ font-size:26px; }
+    .section-desc{ font-size:15.5px; margin-bottom:26px; }
+    .practice-tiles{ gap:18px; }
+    .practice-tile{ padding:22px; }
+    .practice-tile-title{ font-size:16px; }
+    .practice-tile-sub{ font-size:13px; }
+    .letter-grid{ grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:14px; }
+    .lesson-card-grid{ grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:16px; }
+    .stat-grid{ gap:16px; }
+    .stat-card{ padding:22px; }
+    .stat-num{ font-size:32px; }
+    .stat-label{ font-size:13.5px; }
+  }
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- LOGIN -->
+  <div id="loginScreen">
+    <div class="hero-word arabic">АКСИОМА</div>
+    <div class="hero-sub">аксиома — утверждение, из которого строится всё остальное</div>
+    <div class="hero-title">Платформа для учеников по математике</div>
+    <div class="hero-desc">Формулы, практика, квизы и отслеживание прогресса — в одном месте.</div>
+
+    <div class="login-card">
+      <div class="role-toggle">
+        <button class="role-btn active" id="roleStudentBtn">Ученик</button>
+        <button class="role-btn" id="roleTeacherBtn">Преподаватель</button>
+      </div>
+
+      <div class="login-form active" id="studentLoginForm">
+        <div class="field">
+          <label>Логин</label>
+          <input type="text" id="loginInput" placeholder="Логин, который дал преподаватель" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Код</label>
+          <input type="text" id="codeInput" placeholder="Ваш личный код" autocomplete="off">
+        </div>
+        <button class="btn-primary" id="loginBtn">Войти</button>
+        <div class="login-hint">Логин и код выдаёт преподаватель лично каждому ученику.</div>
+      </div>
+
+      <div class="login-form" id="teacherLoginForm">
+        <div class="field">
+          <label>Пароль преподавателя</label>
+          <input type="password" id="teacherPassInput" placeholder="Пароль администратора" autocomplete="off">
+        </div>
+        <button class="btn-primary" id="teacherLoginBtn">Войти в панель</button>
+        <div class="login-hint">Здесь вы добавляете учеников и видите их прогресс.</div>
+      </div>
+
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="adminScreen">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-word arabic">Аксиома</div>
+        <div class="brand-name">Панель преподавателя</div>
+      </div>
+      <button class="logout-btn" id="adminLogoutBtn">Выйти</button>
+    </header>
+    <main class="admin-main">
+      <div class="admin-subnav">
+        <button class="admin-subnav-btn active" id="adminNavStudents">Ученики</button>
+        <button class="admin-subnav-btn" id="adminNavSchedule">Расписание</button>
+        <button class="admin-subnav-btn" id="adminNavMaterials">Формулы и квиз</button>
+        <button class="admin-subnav-btn" id="adminNavContent">Уроки и теория</button>
+        <button class="admin-subnav-btn" id="adminNavTasks">Задания</button>
+      </div>
+
+      <div class="admin-view active" id="adminViewStudents">
+        <div class="admin-card">
+          <div class="admin-card-title">Добавить ученика</div>
+          <div class="add-student-row">
+            <div class="field">
+              <label>Имя ученика</label>
+              <input type="text" id="newStudentName" placeholder="Например, Мария">
+            </div>
+            <button class="btn-primary" id="addStudentBtn">Добавить</button>
+          </div>
+          <div class="credential-box" id="credentialBox">
+            <div class="credential-row"><span>Логин:</span><strong id="newLoginOut"></strong></div>
+            <div class="credential-row"><span>Код:</span><strong id="newCodeOut"></strong></div>
+          </div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-title">Ученики и прогресс</div>
+          <table class="students-table" id="studentsTable">
+            <thead>
+              <tr><th>Имя</th><th>Логин</th><th>Код</th><th>Табл.</th><th>Квизов</th><th>Средний балл</th><th></th></tr>
+            </thead>
+            <tbody id="studentsTableBody"></tbody>
+          </table>
+          <div class="empty-state" id="studentsEmpty" style="display:none;">Пока нет добавленных учеников.</div>
+        </div>
+      </div>
+
+      <div class="admin-view" id="adminViewSchedule">
+        <div class="admin-card">
+          <div class="admin-card-title">Новое занятие</div>
+          <div class="field">
+            <label>Ученики (можно выбрать нескольких для группового занятия)</label>
+            <div class="student-check-list" id="lessonStudentChecks"></div>
+          </div>
+          <div class="add-student-row" style="margin-top:14px;">
+            <div class="field">
+              <label>Дата</label>
+              <input type="date" id="lessonDate">
+            </div>
+            <div class="field">
+              <label>Время</label>
+              <input type="time" id="lessonTime" value="18:00">
+            </div>
+            <div class="field">
+              <label>Длительность</label>
+              <select id="lessonDuration">
+                <option value="30">30 мин</option>
+                <option value="45">45 мин</option>
+                <option value="60" selected>60 мин</option>
+                <option value="90">90 мин</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Тема / заметка (необязательно)</label>
+            <input type="text" id="lessonNote" placeholder="Например, повторение таблицы умножения">
+          </div>
+          <div class="recur-row">
+            <input type="checkbox" id="lessonRecurring">
+            <label for="lessonRecurring" style="font-size:13.5px; color:var(--muted);">Повторяющееся занятие (каждую неделю)</label>
+          </div>
+          <div class="recur-weeks-field" id="recurWeeksField">
+            <label style="font-size:13px; color:var(--muted);">Количество недель:</label>
+            <input type="number" id="recurWeeksCount" value="8" min="2" max="52">
+          </div>
+          <button class="btn-primary" id="addLessonBtn" style="max-width:220px; margin-top:16px;">Добавить занятие</button>
+          <div class="login-error" id="lessonError"></div>
+        </div>
+
+        <div class="admin-card">
+          <div class="cal-header">
+            <button class="cal-nav-btn" id="admCalPrev">‹</button>
+            <div class="cal-title" id="admCalTitle"></div>
+            <button class="cal-nav-btn" id="admCalNext">›</button>
+          </div>
+          <div class="cal-grid" id="admCalGrid"></div>
+          <div class="day-panel" id="admDayPanel" style="display:none;">
+            <div class="day-panel-title" id="admDayPanelTitle"></div>
+            <div id="admDayPanelList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-view" id="adminViewMaterials">
+        <div class="admin-card">
+          <div class="admin-card-title">Формулы для повторения</div>
+          <button class="mat-seed-btn" id="seedFlashcardsBtn">Загрузить стартовый набор (демо-карточки)</button>
+          <div class="mat-form-grid">
+            <div class="field"><label>Категория</label><input type="text" id="newCardCat" placeholder="Например, Алгебра" list="catList"><datalist id="catList"></datalist></div>
+            <div class="field"><label>Формула</label><input type="text" id="newCardAr" placeholder="a² - b² = (a-b)(a+b)"></div>
+            <div class="field"><label>Краткое название</label><input type="text" id="newCardTranslit" placeholder="Разность квадратов"></div>
+            <div class="field"><label>Пояснение</label><input type="text" id="newCardRu" placeholder="Формула сокращённого умножения"></div>
+          </div>
+          <button class="btn-primary" id="addCardBtn" style="max-width:200px;">Добавить карточку</button>
+          <div class="login-error" id="cardError"></div>
+          <div style="margin-top:18px;" id="cardsList"></div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-title">Вопросы для квиза</div>
+          <button class="mat-seed-btn" id="seedQuizBtn">Загрузить стартовый набор (демо-вопросы)</button>
+          <div class="field"><label>Название квиза</label><input type="text" id="newQQuizName" placeholder="Например, Основы математики" list="quizNameList"><datalist id="quizNameList"></datalist></div>
+          <div class="field"><label>Формула (необязательно)</label><input type="text" id="newQAr" placeholder="Оставьте пустым, если не нужно"></div>
+          <div class="field"><label>Текст вопроса</label><input type="text" id="newQText" placeholder="Например, чему равно это выражение?"></div>
+          <div class="mat-form-grid">
+            <div class="field"><label>Вариант 1</label><input type="text" id="newQOpt0"></div>
+            <div class="field"><label>Вариант 2</label><input type="text" id="newQOpt1"></div>
+            <div class="field"><label>Вариант 3</label><input type="text" id="newQOpt2"></div>
+          </div>
+          <div class="radio-row">
+            <label><input type="radio" name="newQCorrect" value="0" checked> Верный: вариант 1</label>
+            <label><input type="radio" name="newQCorrect" value="1"> Верный: вариант 2</label>
+            <label><input type="radio" name="newQCorrect" value="2"> Верный: вариант 3</label>
+          </div>
+          <button class="btn-primary" id="addQBtn" style="max-width:200px; margin-top:14px;">Добавить вопрос</button>
+          <div class="login-error" id="qError"></div>
+          <div style="margin-top:18px;" id="quizList"></div>
+        </div>
+      </div>
+
+      <div class="admin-view" id="adminViewContent">
+        <div class="admin-card">
+          <div class="admin-card-title">Уроки</div>
+          <div class="field"><label>Заголовок</label><input type="text" id="newLessonTitle" placeholder="Например, Урок 2. Проценты"></div>
+          <div class="field"><label>Текст урока</label><textarea id="newLessonBody" rows="4" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Текст, который увидит ученик"></textarea></div>
+          <button class="btn-primary" id="addLessonNoteBtn" style="max-width:200px;">Добавить урок</button>
+          <div class="login-error" id="lessonNoteError"></div>
+          <div style="margin-top:18px;" id="lessonNotesList"></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-title">Теория</div>
+          <div class="field"><label>Заголовок темы</label><input type="text" id="newGrammarTitle" placeholder="Например, Теорема Пифагора"></div>
+          <div class="field"><label>Объяснение</label><textarea id="newGrammarBody" rows="4" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Текст объяснения темы"></textarea></div>
+          <button class="btn-primary" id="addGrammarNoteBtn" style="max-width:200px;">Добавить тему</button>
+          <div class="login-error" id="grammarNoteError"></div>
+          <div style="margin-top:18px;" id="grammarNotesList"></div>
+        </div>
+      </div>
+
+      <div class="admin-view" id="adminViewTasks">
+        <div class="admin-card">
+          <div class="admin-card-title">🧮 Устный счёт</div>
+          <div class="field"><label>Заголовок</label><input type="text" id="newListenTitle" placeholder="Например, Устный счёт: таблица на 7"></div>
+          <div class="field"><label>Описание задания</label><textarea id="newListenBody" rows="3" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Что нужно сделать ученику"></textarea></div>
+          <div class="field"><label>Ссылка на тренажёр (необязательно)</label><input type="text" id="newListenLink" placeholder="https://..."></div>
+          <button class="btn-primary" id="addListenBtn" style="max-width:200px;">Добавить задание</button>
+          <div class="login-error" id="listenError"></div>
+          <div style="margin-top:18px;" id="listenTasksList"></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-title">📝 Задачи</div>
+          <div class="field"><label>Заголовок</label><input type="text" id="newReadTitle" placeholder="Например, Задача про поезда"></div>
+          <div class="field"><label>Текст / описание задания</label><textarea id="newReadBody" rows="3" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Условие задачи или инструкция"></textarea></div>
+          <div class="field"><label>Ссылка (необязательно)</label><input type="text" id="newReadLink" placeholder="https://..."></div>
+          <button class="btn-primary" id="addReadBtn" style="max-width:200px;">Добавить задание</button>
+          <div class="login-error" id="readError"></div>
+          <div style="margin-top:18px;" id="readTasksList"></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-title">📐 Контрольные</div>
+          <div class="field"><label>Заголовок</label><input type="text" id="newWriteTitle" placeholder="Например, Контрольная №1: Дроби"></div>
+          <div class="field"><label>Описание задания</label><textarea id="newWriteBody" rows="3" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Что нужно повторить или решить ученику"></textarea></div>
+          <div class="field"><label>Ссылка (необязательно)</label><input type="text" id="newWriteLink" placeholder="https://..."></div>
+          <button class="btn-primary" id="addWriteBtn" style="max-width:200px;">Добавить задание</button>
+          <div class="login-error" id="writeError"></div>
+          <div style="margin-top:18px;" id="writeTasksList"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- APP -->
+  <div id="appScreen">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-word arabic">Аксиома</div>
+        <div class="sidebar-brand-sub">Математика</div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-tab-btn active" data-tab="home"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 10 L10 3.5 L17 10" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 8.5 V16.5 H15 V8.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 16.5 V12 H11.5 V16.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>Главная</button>
+        <button class="sidebar-tab-btn" data-tab="flashcards"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 5.5 C8.5 4.3 6 4 3.5 4.3 V15 C6 14.7 8.5 15 10 16.2 C11.5 15 14 14.7 16.5 15 V4.3 C14 4 11.5 4.3 10 5.5 Z" stroke-linejoin="round"/><path d="M10 5.5 V16.2" stroke-linecap="round"/></svg>
+        </span>Формулы</button>
+        <button class="sidebar-tab-btn" data-tab="quiz"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M10 2 L11.8 7.2 L17 8 L13 11.6 L14.2 17 L10 14.2 L5.8 17 L7 11.6 L3 8 L8.2 7.2 Z" stroke-linejoin="round"/></svg>
+        </span>Квиз</button>
+        <button class="sidebar-tab-btn" data-tab="practice"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.6"/><circle cx="10" cy="10" r="0.9" fill="currentColor" stroke="none"/></svg>
+        </span>Практика</button>
+        <button class="sidebar-tab-btn" data-tab="lessons"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 5 C4 4 4.8 3.5 6 3.5 H14 C15.2 3.5 16 4 16 5 V16.5 C16 15.5 15.2 15 14 15 H6 C4.8 15 4 15.5 4 16.5 Z" stroke-linejoin="round"/><path d="M10 3.5 V15" stroke-linecap="round"/></svg>
+        </span>Уроки</button>
+        <button class="sidebar-tab-btn" data-tab="grammar"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="4" width="12" height="12" transform="rotate(45 10 10)" stroke-linejoin="round"/><rect x="7.3" y="7.3" width="5.4" height="5.4" transform="rotate(45 10 10)" stroke-linejoin="round"/></svg>
+        </span>Теория</button>
+        <button class="sidebar-tab-btn" data-tab="progress"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 16.5 V11"/><path d="M9 16.5 V6"/><path d="M14 16.5 V9.5"/><path d="M3 16.5 H17"/></svg>
+        </span>Прогресс</button>
+        <button class="sidebar-tab-btn" data-tab="schedule"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="4.5" width="13" height="12" rx="1.5" stroke-linejoin="round"/><path d="M3.5 8 H16.5" stroke-linecap="round"/><path d="M7 3 V5.5" stroke-linecap="round"/><path d="M13 3 V5.5" stroke-linecap="round"/><path d="M10 13.2 A2.6 2.6 0 1 1 12.3 11.6" stroke-linecap="round"/></svg>
+        </span>Расписание</button>
+      </nav>
+      <div class="sidebar-footer">π ≈ 3.14159265…<br>Числа — язык, который понимают все</div>
+    </aside>
+
+    <div class="main-col">
+    <header class="topbar">
+      <div>
+        <div class="topbar-greeting">Здравствуйте, <span id="studentNameChip"></span> 👋</div>
+        <div class="topbar-greeting-sub">Продолжайте заниматься математикой</div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">Выйти</button>
+    </header>
+
+    <div class="hw-banner" id="hwBanner">
+      <div class="hw-banner-icon">📘</div>
+      <div class="hw-banner-body">
+        <div class="hw-banner-title">Домашнее задание</div>
+        <div class="hw-banner-text" id="hwBannerText"></div>
+      </div>
+      <button class="hw-banner-done-btn" id="hwBannerDoneBtn">Отметить выполненным</button>
+    </div>
+
+    <main>
+      <!-- HOME -->
+      <section class="section active" id="section-home">
+        <div class="hero-illustration">
+          <svg viewBox="0 0 600 140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+            <rect width="600" height="140" fill="url(#skyGrad)"/>
+            <defs>
+              <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#4A2318"/>
+                <stop offset="100%" stop-color="#2D120D"/>
+              </linearGradient>
+            </defs>
+            <circle cx="500" cy="40" r="26" fill="#9A3230" opacity="0.85"/>
+            <path d="M0,140 L0,90 Q40,70 80,90 L80,140 Z" fill="#1B0C08"/>
+            <path d="M120,140 L120,60 Q150,20 180,60 L180,140 Z" fill="#1B0C08"/>
+            <circle cx="150" cy="46" r="7" fill="#1B0C08"/>
+            <rect x="145" y="20" width="10" height="26" fill="#1B0C08"/>
+            <path d="M220,140 L220,80 Q260,50 300,80 L300,140 Z" fill="#3A1810"/>
+            <rect x="330" y="50" width="14" height="90" fill="#3A1810"/>
+            <circle cx="337" cy="42" r="9" fill="#3A1810"/>
+            <path d="M400,140 L400,75 Q440,40 480,75 L480,140 Z" fill="#1B0C08"/>
+            <rect x="560" y="60" width="12" height="80" fill="#1B0C08"/>
+            <circle cx="566" cy="52" r="8" fill="#1B0C08"/>
+          </svg>
+          <div class="hero-illustration-text">
+            <div class="hero-illustration-ar arabic">∑ π √</div>
+            <div class="hero-illustration-sub">Начните уверенно решать задачи любой сложности</div>
+          </div>
+        </div>
+
+        <div class="home-grid">
+          <div class="home-card home-card-dark">
+            <div class="home-card-title">Твой прогресс</div>
+            <div class="home-stat-row">
+              <div class="home-stat-ring">
+                <svg width="88" height="88" viewBox="0 0 88 88">
+                  <circle cx="44" cy="44" r="38" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="8"/>
+                  <circle id="homeRingProgress" cx="44" cy="44" r="38" fill="none" stroke="#9A3230" stroke-width="8" stroke-linecap="round" stroke-dasharray="238.76" stroke-dashoffset="238.76"/>
+                </svg>
+                <div class="home-stat-ring-label"><div class="home-stat-ring-num" id="homeRingPct">0%</div></div>
+              </div>
+              <div class="home-stat-list">
+                <div>Табл. умножения <strong id="homeStatLetters">0/45</strong></div>
+                <div>Квизов пройдено <strong id="homeStatQuizzes">0</strong></div>
+                <div>Средний балл <strong id="homeStatAvg">—</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="home-card">
+            <div class="home-card-title">Цель дня</div>
+            <div class="home-goal-label" id="homeGoalLabel">Повторите 10 карточек с формулами сегодня</div>
+            <div class="home-goal-track"><div class="home-goal-fill" id="homeGoalFill" style="width:0%"></div></div>
+            <div class="home-goal-label" id="homeGoalCount">0 / 10</div>
+          </div>
+        </div>
+
+        <div class="home-card" style="margin-bottom:18px;">
+          <div class="home-card-title">Продолжить обучение</div>
+          <div class="home-continue-row" id="homeContinueRow"></div>
+        </div>
+
+        <div class="section-title" style="margin-bottom:14px;">Практика на сегодня</div>
+        <div class="practice-tiles" id="homePracticeTiles"></div>
+      </section>
+
+      <!-- MULTIPLICATION TABLE -->
+      <!-- FLASHCARDS -->
+      <section class="section" id="section-flashcards">
+        <div class="section-title">Формулы</div>
+        <div class="section-desc">Карточки для повторения формул по темам. Нажмите на карточку, чтобы увидеть объяснение.</div>
+        <div class="category-row" id="catRow"></div>
+        <div class="flash-wrap">
+          <div class="flashcard" id="flashcard">
+            <div class="flashcard-inner">
+              <div class="flashcard-face front">
+                <div class="flash-ar arabic" id="flashAr"></div>
+                <div class="flash-translit" id="flashTranslit"></div>
+                <div class="flash-tap-hint">нажмите, чтобы перевернуть</div>
+              </div>
+              <div class="flashcard-face back">
+                <div class="flash-ru" id="flashRu"></div>
+                <div class="flash-tap-hint">нажмите ещё раз</div>
+              </div>
+            </div>
+          </div>
+          <div class="flash-controls">
+            <button class="flash-nav-btn" id="flashPrev">‹</button>
+            <span class="flash-progress" id="flashProgress"></span>
+            <button class="flash-nav-btn" id="flashNext">›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUIZ -->
+      <section class="section" id="section-quiz">
+        <div class="section-title">Проверь себя</div>
+        <div class="section-desc">Выберите квиз и проверьте свои знания.</div>
+        <div class="category-row" id="quizCatRow"></div>
+        <div class="quiz-progress-bar" id="quizProgressBar" style="display:none;"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div></div>
+        <div id="quizBody"></div>
+      </section>
+
+      <!-- PRACTICE HUB -->
+      <section class="section" id="section-practice">
+        <div class="section-title">Практика</div>
+        <div class="section-desc">Быстрый доступ ко всем видам практики.</div>
+        <div class="practice-tiles" id="practicePageTiles"></div>
+      </section>
+
+      <!-- LESSONS -->
+      <section class="section" id="section-lessons">
+        <div id="lessonsListView">
+          <div class="section-title">Уроки</div>
+          <div class="section-desc">Нажмите на урок, чтобы открыть его.</div>
+          <div class="lesson-card-grid" id="lessonsCardGrid"></div>
+        </div>
+        <div id="lessonsDetailView" style="display:none;">
+          <button class="back-btn" id="lessonBackBtn">‹ Все уроки</button>
+          <div id="lessonDetailAlphabet" style="display:none;">
+            <div class="section-title" style="margin-top:14px;">Урок 1: Таблица умножения</div>
+            <div class="section-desc">Нажмите на пример, чтобы отметить его как выученный.</div>
+            <div class="letter-grid" id="letterGrid"></div>
+          </div>
+          <div id="lessonDetailNote" style="display:none;">
+            <div class="content-note" style="margin-top:14px;">
+              <div class="content-note-title" id="lessonDetailTitle"></div>
+              <div class="content-note-body" id="lessonDetailBody"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRAMMAR -->
+      <section class="section" id="section-grammar">
+        <div id="grammarListView">
+          <div class="section-title">Теория</div>
+          <div class="section-desc">Нажмите на тему, чтобы открыть объяснение.</div>
+          <div class="lesson-card-grid" id="grammarCardGrid"></div>
+        </div>
+        <div id="grammarDetailView" style="display:none;">
+          <button class="back-btn" id="grammarBackBtn">‹ Все темы</button>
+          <div class="content-note" style="margin-top:14px;">
+            <div class="content-note-title" id="grammarDetailTitle"></div>
+            <div class="content-note-body" id="grammarDetailBody"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LISTENING -->
+      <section class="section" id="section-listening">
+        <div class="section-title">Устный счёт</div>
+        <div class="section-desc">Задания на устный счёт от преподавателя.</div>
+        <div id="listeningList"></div>
+      </section>
+
+      <!-- READING -->
+      <section class="section" id="section-reading">
+        <div class="section-title">Задачи</div>
+        <div class="section-desc">Текстовые задачи от преподавателя.</div>
+        <div id="readingList"></div>
+      </section>
+
+      <!-- WRITING -->
+      <section class="section" id="section-writing">
+        <div class="section-title">Контрольные</div>
+        <div class="section-desc">Задания для подготовки к контрольным от преподавателя.</div>
+        <div id="writingList"></div>
+      </section>
+
+      <!-- PROGRESS -->
+      <section class="section" id="section-progress">
+        <div class="section-title">Ваш прогресс</div>
+        <div class="section-desc">Статистика по всем разделам платформы.</div>
+        <div class="stat-grid" id="statGrid"></div>
+        <div>
+          <div style="font-size:15px; font-weight:700; margin-bottom:10px;">История квизов</div>
+          <div id="quizHistory"></div>
+        </div>
+      </section>
+
+      <!-- SCHEDULE (student, read-only) -->
+      <section class="section" id="section-schedule">
+        <div class="section-title">Расписание занятий</div>
+        <div class="section-desc">Здесь отмечены ваши занятия. Изменить расписание может только преподаватель.</div>
+        <div class="cal-header">
+          <button class="cal-nav-btn" id="stuCalPrev">‹</button>
+          <div class="cal-title" id="stuCalTitle"></div>
+          <button class="cal-nav-btn" id="stuCalNext">›</button>
+        </div>
+        <div class="cal-grid" id="stuCalGrid"></div>
+        <div class="day-panel" id="stuDayPanel" style="display:none;">
+          <div class="day-panel-title" id="stuDayPanelTitle"></div>
+          <div id="stuDayPanelList"></div>
+        </div>
+      </section>
+    </main>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= FIREBASE ================= */
+// ЗАМЕНИТЕ на конфигурацию из вашего проекта Firebase (Project settings → General → Your apps)
+const firebaseConfig = {
+  apiKey: "ВАШ_API_KEY",
+  authDomain: "ВАШ_ПРОЕКТ.firebaseapp.com",
+  projectId: "ВАШ_ПРОЕКТ",
+  storageBucket: "ВАШ_ПРОЕКТ.firebasestorage.app",
+  messagingSenderId: "ВАШ_SENDER_ID",
+  appId: "ВАШ_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* ================= DATA ================= */
+const TEACHER_PASSWORD = "teacher2026"; // поменяйте на свой пароль
+
+const MULT = (function(){
+  const out = [];
+  for(let a=1; a<=9; a++){
+    for(let b=a; b<=9; b++){
+      out.push([`${a} × ${b}`, "=", String(a*b)]);
+    }
+  }
+  return out;
+})();
+
+const SEED_FLASHCARDS = {
+  "Алгебра":[
+    ["a² - b² = (a-b)(a+b)","Разность квадратов","Формула сокращённого умножения"],
+    ["(a+b)² = a² + 2ab + b²","Квадрат суммы","Формула сокращённого умножения"],
+    ["(a-b)² = a² - 2ab + b²","Квадрат разности","Формула сокращённого умножения"],
+    ["x = (-b ± √(b²-4ac)) / 2a","Корни квадратного уравнения","Через дискриминант D = b²-4ac"]
+  ],
+  "Геометрия":[
+    ["S = πr²","Площадь круга","r — радиус окружности"],
+    ["P = 2(a+b)","Периметр прямоугольника","a и b — стороны"],
+    ["S = (a×h)/2","Площадь треугольника","a — основание, h — высота"],
+    ["a² + b² = c²","Теорема Пифагора","c — гипотенуза прямоугольного треугольника"]
+  ],
+  "Дроби":[
+    ["a/b + c/d = (ad+bc)/bd","Сложение дробей","Приведение к общему знаменателю"],
+    ["a/b × c/d = ac/bd","Умножение дробей","Числитель на числитель, знаменатель на знаменатель"],
+    ["a/b ÷ c/d = ad/bc","Деление дробей","Умножаем на перевёрнутую дробь"],
+    ["a/b = c/d ⟺ ad = bc","Основное свойство пропорции","Произведение крайних равно произведению средних"]
+  ],
+  "Проценты":[
+    ["a% от b = (a×b)/100","Нахождение процента от числа","Например, 20% от 150 = 30"],
+    ["b = (a×100)/p","Число по его проценту","p — процент, a — известная часть"],
+    ["Изменение = (новое-старое)/старое × 100%","Процентное изменение","Показывает рост или снижение в процентах"],
+    ["A = A₀(1+p/100)ⁿ","Сложные проценты","n — количество периодов начисления"]
+  ]
+};
+
+const SEED_QUIZ = [
+  {ar:"7 × 8", q:"Чему равно это произведение?", options:["54","56","64"], correct:1},
+  {ar:"", q:"Как называется число под знаком корня?", options:["Показатель","Подкоренное выражение","Основание"], correct:1},
+  {ar:"(x+3)²", q:"Раскройте скобки:", options:["x²+9","x²+6x+9","x²+3x+9"], correct:1},
+  {ar:"", q:"Сумма углов треугольника равна:", options:["90°","180°","360°"], correct:1},
+  {ar:"3/4 + 1/4", q:"Чему равна эта сумма?", options:["1/2","1","4/16"], correct:1},
+  {ar:"", q:"Треугольник со сторонами 3, 4 и 5 называют:", options:["Равносторонним","Египетским","Тупоугольным"], correct:1},
+  {ar:"20% от 300", q:"Чему это равно?", options:["60","30","6"], correct:0},
+  {ar:"x² = 16", q:"Какие значения x являются решением?", options:["Только 4","Только -4","4 и -4"], correct:2}
+];
+
+/* ================= STATE ================= */
+let studentId = null;
+let studentName = null;
+let currentCat = null;
+let currentFlashCardId = null;
+let flashIndex = 0;
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswered = false;
+let flashcardsData = {}; // { category: [{id,ar,translit,ru}] }
+let quizzesData = {}; // { quizName: [{id,ar,q,options,correct}] }
+let currentQuizName = null;
+
+async function loadFlashcardsData(){
+  try{
+    const snap = await db.collection('flashcards').get();
+    const map = {};
+    snap.docs.forEach(d=>{
+      const c = d.data();
+      (map[c.category] = map[c.category] || []).push({ id:d.id, ar:c.ar, translit:c.translit, ru:c.ru });
+    });
+    return map;
+  }catch(e){ console.error('load flashcards failed', e); return {}; }
+}
+async function loadQuizzesData(){
+  try{
+    const snap = await db.collection('quizQuestions').get();
+    const map = {};
+    snap.docs.forEach(d=>{
+      const q = d.data();
+      const name = q.quizName || 'Общий квиз';
+      (map[name] = map[name] || []).push({ id:d.id, ar:q.ar, q:q.q, options:q.options, correct:q.correct });
+    });
+    return map;
+  }catch(e){ console.error('load quizzes failed', e); return {}; }
+}
+
+/* ================= STORAGE HELPERS ================= */
+async function loadProgress(id){
+  try{
+    const doc = await db.collection('progress').doc(id).get();
+    const base = { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{} };
+    return doc.exists ? Object.assign(base, doc.data()) : base;
+  }catch(e){
+    console.error('load progress failed', e);
+    return { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{} };
+  }
+}
+async function saveProgress(id, data){
+  try{ await db.collection('progress').doc(id).set(data); }
+  catch(e){ console.error('save failed', e); }
+}
+let progress = { seenLetters:[], quizHistory:[] };
+let roster = []; // [{id, name, code}]
+
+async function loadRoster(){
+  try{
+    const snap = await db.collection('students').get();
+    return snap.docs.map(d => ({ id: d.id, name: d.data().name, code: d.data().code }));
+  }catch(e){ console.error('load roster failed', e); return []; }
+}
+function transliterateSlug(name){
+  const map = {а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'c',ч:'ch',ш:'sh',щ:'sch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya'};
+  return name.toLowerCase().split('').map(ch=>map[ch]!==undefined?map[ch]:ch).join('').replace(/[^a-z0-9]/g,'');
+}
+
+/* ================= ROLE TOGGLE ================= */
+document.getElementById('roleStudentBtn').addEventListener('click', ()=>{
+  document.getElementById('roleStudentBtn').classList.add('active');
+  document.getElementById('roleTeacherBtn').classList.remove('active');
+  document.getElementById('studentLoginForm').classList.add('active');
+  document.getElementById('teacherLoginForm').classList.remove('active');
+  document.getElementById('loginError').textContent = '';
+});
+document.getElementById('roleTeacherBtn').addEventListener('click', ()=>{
+  document.getElementById('roleTeacherBtn').classList.add('active');
+  document.getElementById('roleStudentBtn').classList.remove('active');
+  document.getElementById('teacherLoginForm').classList.add('active');
+  document.getElementById('studentLoginForm').classList.remove('active');
+  document.getElementById('loginError').textContent = '';
+});
+
+/* ================= STUDENT LOGIN ================= */
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+document.getElementById('loginInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('codeInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+async function doLogin(){
+  const login = document.getElementById('loginInput').value.trim().toLowerCase();
+  const code = document.getElementById('codeInput').value.trim();
+  const errEl = document.getElementById('loginError');
+  if(!login || !code){ errEl.textContent = 'Введите логин и код.'; return; }
+  let student = null;
+  try{
+    const doc = await db.collection('students').doc(login).get();
+    if(doc.exists && doc.data().code === code){ student = { id: login, name: doc.data().name, code: doc.data().code }; }
+  }catch(e){ console.error('login check failed', e); }
+  if(!student){ errEl.textContent = 'Логин или код неверны. Уточните у преподавателя.'; return; }
+  errEl.textContent = '';
+  studentName = student.name;
+  studentId = student.id;
+  progress = await loadProgress(studentId);
+  document.getElementById('studentNameChip').textContent = studentName;
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'flex';
+  initAlphabet();
+  await initFlashcards();
+  await initQuiz();
+  renderProgress();
+  renderHomeworkBanner();
+  renderHome();
+}
+
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginInput').value='';
+  document.getElementById('codeInput').value='';
+});
+
+/* ================= TEACHER LOGIN ================= */
+document.getElementById('teacherLoginBtn').addEventListener('click', doTeacherLogin);
+document.getElementById('teacherPassInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doTeacherLogin(); });
+
+async function doTeacherLogin(){
+  const pass = document.getElementById('teacherPassInput').value;
+  const errEl = document.getElementById('loginError');
+  if(pass !== TEACHER_PASSWORD){ errEl.textContent = 'Неверный пароль.'; return; }
+  errEl.textContent = '';
+  document.getElementById('teacherPassInput').value = '';
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminScreen').style.display = 'flex';
+  await renderAdmin();
+}
+document.getElementById('adminLogoutBtn').addEventListener('click', ()=>{
+  document.getElementById('adminScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+});
+
+document.getElementById('adminNavStudents').addEventListener('click', ()=>{
+  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
+    document.getElementById('adminNav'+k).classList.remove('active');
+    document.getElementById('adminView'+k).classList.remove('active');
+  });
+  document.getElementById('adminNavStudents').classList.add('active');
+  document.getElementById('adminViewStudents').classList.add('active');
+});
+document.getElementById('adminNavSchedule').addEventListener('click', async ()=>{
+  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
+    document.getElementById('adminNav'+k).classList.remove('active');
+    document.getElementById('adminView'+k).classList.remove('active');
+  });
+  document.getElementById('adminNavSchedule').classList.add('active');
+  document.getElementById('adminViewSchedule').classList.add('active');
+  await initAdminSchedule();
+});
+document.getElementById('adminNavMaterials').addEventListener('click', async ()=>{
+  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
+    document.getElementById('adminNav'+k).classList.remove('active');
+    document.getElementById('adminView'+k).classList.remove('active');
+  });
+  document.getElementById('adminNavMaterials').classList.add('active');
+  document.getElementById('adminViewMaterials').classList.add('active');
+  await renderMaterialsAdmin();
+});
+document.getElementById('adminNavContent').addEventListener('click', async ()=>{
+  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
+    document.getElementById('adminNav'+k).classList.remove('active');
+    document.getElementById('adminView'+k).classList.remove('active');
+  });
+  document.getElementById('adminNavContent').classList.add('active');
+  document.getElementById('adminViewContent').classList.add('active');
+  await renderContentAdmin();
+});
+document.getElementById('adminNavTasks').addEventListener('click', async ()=>{
+  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
+    document.getElementById('adminNav'+k).classList.remove('active');
+    document.getElementById('adminView'+k).classList.remove('active');
+  });
+  document.getElementById('adminNavTasks').classList.add('active');
+  document.getElementById('adminViewTasks').classList.add('active');
+  await renderTasksAdmin();
+});
+
+
+/* ================= ADMIN: ADD / DELETE STUDENTS ================= */
+document.getElementById('addStudentBtn').addEventListener('click', addStudent);
+document.getElementById('newStudentName').addEventListener('keydown', e=>{ if(e.key==='Enter') addStudent(); });
+
+async function addStudent(){
+  const nameInput = document.getElementById('newStudentName');
+  const name = nameInput.value.trim();
+  if(!name) return;
+  roster = await loadRoster();
+  let baseId = transliterateSlug(name) || 'student';
+  let id = baseId, n = 1;
+  while(roster.some(s=>s.id===id)){ id = baseId + n; n++; }
+  const code = String(Math.floor(1000 + Math.random()*9000));
+  try{
+    await db.collection('students').doc(id).set({ name, code });
+  }catch(e){ console.error('add student failed', e); alert('Не удалось добавить ученика. Проверьте подключение к Firebase.'); return; }
+  nameInput.value = '';
+  document.getElementById('credentialBox').classList.add('show');
+  document.getElementById('newLoginOut').textContent = id;
+  document.getElementById('newCodeOut').textContent = code;
+  await renderAdmin();
+}
+
+async function deleteStudent(id){
+  try{
+    await db.collection('students').doc(id).delete();
+    await db.collection('progress').doc(id).delete();
+  }catch(e){ console.error('delete student failed', e); }
+  await renderAdmin();
+}
+
+async function renderAdmin(){
+  roster = await loadRoster();
+  const tbody = document.getElementById('studentsTableBody');
+  const empty = document.getElementById('studentsEmpty');
+  if(!roster.length){
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  const rows = await Promise.all(roster.map(async s=>{
+    const p = await loadProgress(s.id);
+    const totalQ = p.quizHistory.length;
+    const avg = totalQ ? Math.round(p.quizHistory.reduce((sum,h)=>sum+(h.score/h.total),0)/totalQ*100) : 0;
+    return `<tr>
+      <td>${s.name}</td>
+      <td class="login-cell">${s.id}</td>
+      <td class="login-cell">${s.code}</td>
+      <td>${p.seenLetters.length}/${MULT.length}</td>
+      <td>${totalQ}</td>
+      <td>${totalQ ? avg+'%' : '—'}</td>
+      <td><button class="del-student-btn" data-id="${s.id}">Удалить</button></td>
+    </tr>`;
+  }));
+  tbody.innerHTML = rows.join('');
+  tbody.querySelectorAll('.del-student-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> deleteStudent(btn.dataset.id));
+  });
+}
+
+/* ================= TABS ================= */
+function activateTab(tabName){
+  document.querySelectorAll('.sidebar-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  const btn = document.querySelector(`.sidebar-tab-btn[data-tab="${tabName}"]`);
+  if(btn) btn.classList.add('active');
+  document.getElementById('section-'+tabName).classList.add('active');
+  if(tabName === 'progress') renderProgress();
+  if(tabName === 'schedule') initStudentSchedule();
+  if(tabName === 'home') renderHome();
+  if(tabName === 'practice') renderPracticeHub();
+  if(tabName === 'lessons') renderLessonsList();
+  if(tabName === 'grammar') renderGrammarList();
+  if(tabName === 'listening') renderListeningList();
+  if(tabName === 'reading') renderReadingList();
+  if(tabName === 'writing') renderWritingList();
+}
+document.querySelectorAll('.sidebar-tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> activateTab(btn.dataset.tab));
+});
+
+/* ================= MULTIPLICATION TABLE ================= */
+function initAlphabet(){
+  const grid = document.getElementById('letterGrid');
+  grid.innerHTML = '';
+  MULT.forEach(([ar,translit,name])=>{
+    const card = document.createElement('div');
+    card.className = 'letter-card' + (progress.seenLetters.includes(ar) ? ' seen' : '');
+    card.innerHTML = `<div class="letter-ar arabic">${ar}</div><div class="letter-translit mono">${translit}</div><div class="letter-name">${name}</div>`;
+    card.addEventListener('click', ()=>{
+      if(!progress.seenLetters.includes(ar)){
+        progress.seenLetters.push(ar);
+        saveProgress(studentId, progress);
+        card.classList.add('seen');
+      }
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* ================= FLASHCARDS ================= */
+async function initFlashcards(){
+  flashcardsData = await loadFlashcardsData();
+  const cats = Object.keys(flashcardsData);
+  const catRow = document.getElementById('catRow');
+  catRow.innerHTML = '';
+  if(!cats.length){
+    document.querySelector('#section-flashcards .flash-wrap').style.display = 'none';
+    catRow.innerHTML = '<div class="empty-state">Пока нет карточек — преподаватель ещё не добавил материалы для этого раздела.</div>';
+    return;
+  }
+  document.querySelector('#section-flashcards .flash-wrap').style.display = 'flex';
+  if(!currentCat || !cats.includes(currentCat)) currentCat = cats[0];
+  flashIndex = 0;
+  cats.forEach(cat=>{
+    const chip = document.createElement('button');
+    chip.className = 'cat-chip' + (cat===currentCat ? ' active' : '');
+    chip.textContent = cat;
+    chip.addEventListener('click', ()=>{
+      currentCat = cat; flashIndex = 0;
+      document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      renderFlashcard();
+      progress.lastCategory = cat;
+      saveProgress(studentId, progress);
+    });
+    catRow.appendChild(chip);
+  });
+  renderFlashcard();
+  if(!progress.lastCategory){ progress.lastCategory = currentCat; saveProgress(studentId, progress); }
+}
+function renderFlashcard(){
+  const cards = flashcardsData[currentCat];
+  if(!cards || !cards.length) return;
+  const c = cards[flashIndex];
+  currentFlashCardId = c.id;
+  document.getElementById('flashAr').textContent = c.ar;
+  document.getElementById('flashTranslit').textContent = c.translit;
+  document.getElementById('flashRu').textContent = c.ru;
+  document.getElementById('flashProgress').textContent = (flashIndex+1)+' / '+cards.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+document.getElementById('flashcard').addEventListener('click', function(){
+  this.classList.toggle('flipped');
+  if(this.classList.contains('flipped') && currentFlashCardId){
+    progress.seenCards = progress.seenCards || {};
+    if(!progress.seenCards[currentFlashCardId]){
+      progress.seenCards[currentFlashCardId] = true;
+      bumpDailyGoal(1);
+      saveProgress(studentId, progress);
+    }
+  }
+});
+document.getElementById('flashPrev').addEventListener('click', e=>{
+  e.stopPropagation();
+  const cards = flashcardsData[currentCat]; if(!cards) return;
+  flashIndex = (flashIndex - 1 + cards.length) % cards.length;
+  renderFlashcard();
+});
+document.getElementById('flashNext').addEventListener('click', e=>{
+  e.stopPropagation();
+  const cards = flashcardsData[currentCat]; if(!cards) return;
+  flashIndex = (flashIndex + 1) % cards.length;
+  renderFlashcard();
+});
+
+/* ================= QUIZ ================= */
+async function initQuiz(){
+  quizzesData = await loadQuizzesData();
+  const names = Object.keys(quizzesData);
+  const catRow = document.getElementById('quizCatRow');
+  const bar = document.getElementById('quizProgressBar');
+  catRow.innerHTML = '';
+  if(!names.length){
+    bar.style.display = 'none';
+    document.getElementById('quizBody').innerHTML = '<div class="empty-state">Пока нет вопросов — преподаватель ещё не добавил квиз.</div>';
+    return;
+  }
+  names.forEach(name=>{
+    const chip = document.createElement('button');
+    chip.className = 'cat-chip' + (name===currentQuizName ? ' active' : '');
+    chip.textContent = name;
+    chip.addEventListener('click', ()=>{
+      currentQuizName = name;
+      document.querySelectorAll('#quizCatRow .cat-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      startQuiz();
+    });
+    catRow.appendChild(chip);
+  });
+  if(!currentQuizName || !names.includes(currentQuizName)){
+    document.getElementById('quizBody').innerHTML = '<div class="empty-state">Выберите квиз выше, чтобы начать.</div>';
+    bar.style.display = 'none';
+    return;
+  }
+  startQuiz();
+}
+function startQuiz(){
+  quizIndex = 0; quizScore = 0; quizAnswered = false;
+  document.getElementById('quizProgressBar').style.display = 'block';
+  renderQuiz();
+}
+function renderQuiz(){
+  const quizData = quizzesData[currentQuizName] || [];
+  const body = document.getElementById('quizBody');
+  const fill = document.getElementById('quizProgressFill');
+  if(quizIndex >= quizData.length){
+    fill.style.width = '100%';
+    const pct = Math.round((quizScore/quizData.length)*100);
+    body.innerHTML = `
+      <div class="quiz-result">
+        <div class="quiz-result-score">${quizScore}/${quizData.length}</div>
+        <div class="quiz-result-label">Правильных ответов (${pct}%)</div>
+        <button class="btn-primary" style="max-width:200px; margin:22px auto 0;" id="quizRestart">Пройти ещё раз</button>
+      </div>`;
+    document.getElementById('quizRestart').addEventListener('click', startQuiz);
+    progress.quizHistory.push({date:new Date().toISOString(), score:quizScore, total:quizData.length, quizName:currentQuizName});
+    saveProgress(studentId, progress);
+    return;
+  }
+  fill.style.width = Math.round((quizIndex/quizData.length)*100)+'%';
+  const q = quizData[quizIndex];
+  quizAnswered = false;
+  body.innerHTML = `
+    <div class="quiz-question">
+      ${q.ar ? `<div class="q-arabic arabic">${q.ar}</div>` : ''}
+      <div class="q-text">${q.q}</div>
+      <div class="q-options">
+        ${q.options.map((opt,i)=>`<button class="q-option" data-i="${i}">${opt}</button>`).join('')}
+      </div>
+    </div>`;
+  document.querySelectorAll('.q-option').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(quizAnswered) return;
+      quizAnswered = true;
+      const i = parseInt(btn.dataset.i);
+      document.querySelectorAll('.q-option').forEach(b=>{
+        const bi = parseInt(b.dataset.i);
+        if(bi === q.correct) b.classList.add('correct');
+        else if(bi === i) b.classList.add('wrong');
+      });
+      if(i === q.correct) quizScore++;
+      setTimeout(()=>{ quizIndex++; renderQuiz(); }, 900);
+    });
+  });
+}
+
+/* ================= PROGRESS ================= */
+function renderProgress(){
+  const grid = document.getElementById('statGrid');
+  const totalQuizzes = progress.quizHistory.length;
+  const avgScore = totalQuizzes ? Math.round(progress.quizHistory.reduce((s,h)=>s+(h.score/h.total),0)/totalQuizzes*100) : 0;
+  const lessonsCompleted = Object.keys(progress.completedLessons || {}).length;
+  const wordsLearned = Object.keys(progress.seenCards || {}).length;
+  grid.innerHTML = `
+    <div class="stat-card"><div class="stat-num">${lessonsCompleted}</div><div class="stat-label">Уроков пройдено</div></div>
+    <div class="stat-card"><div class="stat-num">${wordsLearned}</div><div class="stat-label">Слов выучено</div></div>
+    <div class="stat-card"><div class="stat-num">${progress.seenLetters.length}/${MULT.length}</div><div class="stat-label">Табл. умножения</div></div>
+    <div class="stat-card"><div class="stat-num">${totalQuizzes}</div><div class="stat-label">Квизов пройдено</div></div>
+    <div class="stat-card"><div class="stat-num">${avgScore}%</div><div class="stat-label">Средний результат</div></div>
+  `;
+  const hist = document.getElementById('quizHistory');
+  if(!progress.quizHistory.length){
+    hist.innerHTML = '<div class="empty-state">Пока нет пройденных квизов — попробуйте раздел «Квиз».</div>';
+  } else {
+    hist.innerHTML = progress.quizHistory.slice().reverse().slice(0,10).map(h=>{
+      const d = new Date(h.date);
+      const dateStr = d.toLocaleDateString('ru-RU', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+      return `<div class="history-item"><span>${h.quizName ? h.quizName+' · ' : ''}${dateStr}</span><strong>${h.score}/${h.total}</strong></div>`;
+    }).join('');
+  }
+}
+
+/* ================= SCHEDULE ================= */
+const DOW_LABELS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+const MONTH_LABELS = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+
+async function loadLessons(){
+  try{
+    const snap = await db.collection('lessons').get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }catch(e){ console.error('load lessons failed', e); return []; }
+}
+function fmtDate(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+function todayStr(){ const t = new Date(); return fmtDate(t.getFullYear(), t.getMonth(), t.getDate()); }
+
+function buildCalendarGrid(gridEl, year, month, lessonsByDate, onDayClick, selectedDate){
+  gridEl.innerHTML = '';
+  DOW_LABELS.forEach(l=>{
+    const el = document.createElement('div');
+    el.className = 'cal-dow'; el.textContent = l;
+    gridEl.appendChild(el);
+  });
+  const firstDow = (new Date(year, month, 1).getDay() + 6) % 7; // Monday-first
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = todayStr();
+  for(let i=0;i<firstDow;i++){
+    const empty = document.createElement('div');
+    empty.className = 'cal-day empty';
+    gridEl.appendChild(empty);
+  }
+  for(let d=1; d<=daysInMonth; d++){
+    const dateStr = fmtDate(year, month, d);
+    const cell = document.createElement('div');
+    cell.className = 'cal-day' + (dateStr===today?' today':'') + (dateStr===selectedDate?' selected':'');
+    const lessons = lessonsByDate[dateStr] || [];
+    const hasGroup = lessons.some(l=>l.studentIds.length>1);
+    let innerContent = `<div class="cal-day-num">${d}</div>`;
+    if(lessons.length === 1){
+      innerContent += `<div class="cal-day-time">${lessons[0].time}</div>`;
+      cell.className += ' has-lesson' + (hasGroup ? ' group' : '');
+    } else if(lessons.length > 1){
+      innerContent += `<div class="cal-day-time">${lessons[0].time}</div><div class="cal-day-count">+${lessons.length-1} ещё</div>`;
+      cell.className += ' has-lesson' + (hasGroup ? ' group' : '');
+    }
+    cell.innerHTML = innerContent;
+    cell.addEventListener('click', ()=> onDayClick(dateStr));
+    gridEl.appendChild(cell);
+  }
+}
+function groupLessonsByDate(lessons){
+  const map = {};
+  lessons.forEach(l=>{ (map[l.date] = map[l.date] || []).push(l); });
+  Object.values(map).forEach(arr => arr.sort((a,b)=> a.time.localeCompare(b.time)));
+  return map;
+}
+function studentNamesFor(ids, roster){
+  return ids.map(id => (roster.find(s=>s.id===id) || {name:id}).name).join(', ');
+}
+
+/* ---- ADMIN CALENDAR ---- */
+let admCalYear, admCalMonth, admSelectedDate = null, admLessonsCache = [];
+async function initAdminSchedule(){
+  const now = new Date();
+  admCalYear = now.getFullYear(); admCalMonth = now.getMonth();
+  roster = await loadRoster();
+  renderLessonStudentChecks();
+  await renderAdminCalendar();
+}
+function renderLessonStudentChecks(){
+  const wrap = document.getElementById('lessonStudentChecks');
+  if(!roster.length){ wrap.innerHTML = '<span style="color:var(--muted); font-size:13px;">Сначала добавьте учеников во вкладке «Ученики».</span>'; return; }
+  wrap.innerHTML = roster.map(s=>`<div class="student-check" data-id="${s.id}">${s.name}</div>`).join('');
+  wrap.querySelectorAll('.student-check').forEach(el=>{
+    el.addEventListener('click', ()=> el.classList.toggle('checked'));
+  });
+}
+async function renderAdminCalendar(){
+  admLessonsCache = await loadLessons();
+  const byDate = groupLessonsByDate(admLessonsCache);
+  document.getElementById('admCalTitle').textContent = `${MONTH_LABELS[admCalMonth]} ${admCalYear}`;
+  buildCalendarGrid(document.getElementById('admCalGrid'), admCalYear, admCalMonth, byDate, showAdminDay, admSelectedDate);
+  if(admSelectedDate) showAdminDay(admSelectedDate);
+}
+function showAdminDay(dateStr){
+  admSelectedDate = dateStr;
+  const byDate = groupLessonsByDate(admLessonsCache);
+  buildCalendarGrid(document.getElementById('admCalGrid'), admCalYear, admCalMonth, byDate, showAdminDay, admSelectedDate);
+  const panel = document.getElementById('admDayPanel');
+  const list = document.getElementById('admDayPanelList');
+  const d = new Date(dateStr+'T00:00:00');
+  document.getElementById('admDayPanelTitle').textContent = d.toLocaleDateString('ru-RU', {day:'numeric', month:'long', weekday:'long'});
+  const lessons = byDate[dateStr] || [];
+  panel.style.display = 'block';
+  if(!lessons.length){
+    list.innerHTML = '<div class="empty-state" style="padding:16px 0;">Занятий нет.</div>';
+    return;
+  }
+  list.innerHTML = lessons.map(l => `
+    <div class="lesson-item" style="flex-direction:column; align-items:stretch;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="lesson-item-info">
+          <strong>${l.time}</strong><span class="lesson-item-students">${studentNamesFor(l.studentIds, roster)} · ${l.duration} мин</span>
+          ${l.note ? `<div class="lesson-item-note">${l.note}</div>` : ''}
+        </div>
+        <div class="lesson-actions">
+          <button class="lesson-del-btn" data-id="${l.id}" data-mode="one">Удалить</button>
+          ${l.seriesId ? `<button class="lesson-del-btn" data-series="${l.seriesId}" data-date="${l.date}" data-mode="series">Всю серию</button>` : ''}
+        </div>
+      </div>
+      <div class="hw-edit-row">
+        <input type="text" placeholder="Домашнее задание для этого занятия" value="${(l.homework||'').replace(/"/g,'&quot;')}" data-hw-id="${l.id}">
+        <button class="hw-save-btn" data-hw-save="${l.id}">Сохранить</button>
+      </div>
+    </div>`).join('');
+  list.querySelectorAll('[data-hw-save]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.hwSave;
+      const input = list.querySelector(`[data-hw-id="${id}"]`);
+      try{
+        await db.collection('lessons').doc(id).update({ homework: input.value.trim() });
+        btn.textContent = 'Сохранено ✓';
+        setTimeout(()=>{ btn.textContent = 'Сохранить'; }, 1500);
+        admLessonsCache = await loadLessons();
+      }catch(e){ console.error(e); }
+    });
+  });
+  list.querySelectorAll('[data-mode="one"]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{ await db.collection('lessons').doc(btn.dataset.id).delete(); await renderAdminCalendar(); });
+  });
+  list.querySelectorAll('[data-mode="series"]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const toDelete = admLessonsCache.filter(l => l.seriesId === btn.dataset.series && l.date >= btn.dataset.date);
+      await Promise.all(toDelete.map(l => db.collection('lessons').doc(l.id).delete()));
+      await renderAdminCalendar();
+    });
+  });
+}
+document.getElementById('admCalPrev').addEventListener('click', ()=>{
+  admCalMonth--; if(admCalMonth<0){ admCalMonth=11; admCalYear--; } admSelectedDate=null;
+  document.getElementById('admDayPanel').style.display='none'; renderAdminCalendar();
+});
+document.getElementById('admCalNext').addEventListener('click', ()=>{
+  admCalMonth++; if(admCalMonth>11){ admCalMonth=0; admCalYear++; } admSelectedDate=null;
+  document.getElementById('admDayPanel').style.display='none'; renderAdminCalendar();
+});
+document.getElementById('lessonRecurring').addEventListener('change', function(){
+  document.getElementById('recurWeeksField').classList.toggle('show', this.checked);
+});
+document.getElementById('addLessonBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('lessonError');
+  errEl.textContent = '';
+  const ids = Array.from(document.querySelectorAll('.student-check.checked')).map(el=>el.dataset.id);
+  const date = document.getElementById('lessonDate').value;
+  const time = document.getElementById('lessonTime').value;
+  const duration = parseInt(document.getElementById('lessonDuration').value);
+  const note = document.getElementById('lessonNote').value.trim();
+  const recurring = document.getElementById('lessonRecurring').checked;
+  const weeks = parseInt(document.getElementById('recurWeeksCount').value) || 1;
+  if(!ids.length){ errEl.textContent = 'Выберите хотя бы одного ученика.'; return; }
+  if(!date){ errEl.textContent = 'Укажите дату.'; return; }
+  const seriesId = recurring ? ('s'+Date.now()) : null;
+  const count = recurring ? weeks : 1;
+  const baseDate = new Date(date+'T00:00:00');
+  try{
+    const batchWrites = [];
+    for(let i=0;i<count;i++){
+      const d = new Date(baseDate); d.setDate(d.getDate() + i*7);
+      const dateStr = fmtDate(d.getFullYear(), d.getMonth(), d.getDate());
+      batchWrites.push(db.collection('lessons').add({ studentIds: ids, date: dateStr, time, duration, note, seriesId }));
+    }
+    await Promise.all(batchWrites);
+  }catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить занятие.'; return; }
+  document.querySelectorAll('.student-check.checked').forEach(el=>el.classList.remove('checked'));
+  document.getElementById('lessonNote').value = '';
+  document.getElementById('lessonRecurring').checked = false;
+  document.getElementById('recurWeeksField').classList.remove('show');
+  await renderAdminCalendar();
+});
+
+/* ---- STUDENT CALENDAR (read-only) ---- */
+let stuCalYear, stuCalMonth, stuSelectedDate = null, stuLessonsCache = [];
+async function initStudentSchedule(){
+  const now = new Date();
+  stuCalYear = now.getFullYear(); stuCalMonth = now.getMonth();
+  await renderStudentCalendar();
+}
+async function renderStudentCalendar(){
+  const all = await loadLessons();
+  stuLessonsCache = all.filter(l => l.studentIds.includes(studentId));
+  const byDate = groupLessonsByDate(stuLessonsCache);
+  document.getElementById('stuCalTitle').textContent = `${MONTH_LABELS[stuCalMonth]} ${stuCalYear}`;
+  buildCalendarGrid(document.getElementById('stuCalGrid'), stuCalYear, stuCalMonth, byDate, showStudentDay, stuSelectedDate);
+  if(stuSelectedDate) showStudentDay(stuSelectedDate);
+}
+function showStudentDay(dateStr){
+  stuSelectedDate = dateStr;
+  const byDate = groupLessonsByDate(stuLessonsCache);
+  buildCalendarGrid(document.getElementById('stuCalGrid'), stuCalYear, stuCalMonth, byDate, showStudentDay, stuSelectedDate);
+  const panel = document.getElementById('stuDayPanel');
+  const list = document.getElementById('stuDayPanelList');
+  const d = new Date(dateStr+'T00:00:00');
+  document.getElementById('stuDayPanelTitle').textContent = d.toLocaleDateString('ru-RU', {day:'numeric', month:'long', weekday:'long'});
+  const lessons = byDate[dateStr] || [];
+  panel.style.display = 'block';
+  if(!lessons.length){
+    list.innerHTML = '<div class="empty-state" style="padding:16px 0;">Занятий нет.</div>';
+    return;
+  }
+  list.innerHTML = lessons.map(l => `
+    <div class="lesson-item" style="flex-direction:column; align-items:stretch;">
+      <div class="lesson-item-info">
+        <strong>${l.time}</strong><span class="lesson-item-students">${l.duration} мин${l.studentIds.length>1 ? ' · групповое' : ''}</span>
+        ${l.note ? `<div class="lesson-item-note">${l.note}</div>` : ''}
+      </div>
+      ${l.homework ? `
+        <label class="lesson-hw-text">
+          <input type="checkbox" class="hw-check" data-hw-lesson="${l.id}" ${progress.homeworkDone && progress.homeworkDone[l.id] ? 'checked' : ''}>
+          📘 ${l.homework}
+        </label>` : ''}
+    </div>`).join('');
+  list.querySelectorAll('[data-hw-lesson]').forEach(cb=>{
+    cb.addEventListener('change', async ()=>{
+      progress.homeworkDone = progress.homeworkDone || {};
+      progress.homeworkDone[cb.dataset.hwLesson] = cb.checked;
+      await saveProgress(studentId, progress);
+      await renderHomeworkBanner();
+    });
+  });
+}
+document.getElementById('stuCalPrev').addEventListener('click', ()=>{
+  stuCalMonth--; if(stuCalMonth<0){ stuCalMonth=11; stuCalYear--; } stuSelectedDate=null;
+  document.getElementById('stuDayPanel').style.display='none'; renderStudentCalendar();
+});
+document.getElementById('stuCalNext').addEventListener('click', ()=>{
+  stuCalMonth++; if(stuCalMonth>11){ stuCalMonth=0; stuCalYear++; } stuSelectedDate=null;
+  document.getElementById('stuDayPanel').style.display='none'; renderStudentCalendar();
+});
+
+/* ---- HOMEWORK BANNER ---- */
+async function renderHomeworkBanner(){
+  const banner = document.getElementById('hwBanner');
+  const all = await loadLessons();
+  const mine = all.filter(l => l.studentIds.includes(studentId) && l.homework && l.homework.trim());
+  progress.homeworkDone = progress.homeworkDone || {};
+  const pending = mine.filter(l => !progress.homeworkDone[l.id]);
+  if(!pending.length){ banner.classList.remove('show'); return; }
+  // show the most recent assigned (closest date to today, past or today first, else nearest upcoming)
+  const today = todayStr();
+  pending.sort((a,b)=> a.date.localeCompare(b.date));
+  let chosen = pending.filter(l=>l.date<=today).slice(-1)[0] || pending[0];
+  const d = new Date(chosen.date+'T00:00:00');
+  const dateLabel = d.toLocaleDateString('ru-RU', {day:'numeric', month:'long'});
+  document.getElementById('hwBannerText').textContent = `К занятию ${dateLabel}: ${chosen.homework}`;
+  document.getElementById('hwBannerDoneBtn').onclick = async ()=>{
+    progress.homeworkDone[chosen.id] = true;
+    await saveProgress(studentId, progress);
+    await renderHomeworkBanner();
+  };
+  banner.classList.add('show');
+}
+
+/* ================= MATERIALS MANAGEMENT (admin) ================= */
+async function renderMaterialsAdmin(){
+  const cardsMap = await loadFlashcardsData();
+  const quizzesMap = await loadQuizzesData();
+
+  // populate category / quiz name datalists
+  document.getElementById('catList').innerHTML = Object.keys(cardsMap).map(c=>`<option value="${c}">`).join('');
+  document.getElementById('quizNameList').innerHTML = Object.keys(quizzesMap).map(n=>`<option value="${n}">`).join('');
+
+  const cardsListEl = document.getElementById('cardsList');
+  const allCards = Object.entries(cardsMap).flatMap(([cat, arr]) => arr.map(c => ({...c, category:cat})));
+  if(!allCards.length){
+    cardsListEl.innerHTML = '<div class="empty-state">Пока нет карточек.</div>';
+  } else {
+    cardsListEl.innerHTML = allCards.map(c => `
+      <div class="mat-list-item">
+        <div class="mat-list-item-body">
+          <div class="mat-list-cat">${c.category}</div>
+          <div class="mat-list-main"><span class="mat-list-ar arabic">${c.ar}</span><span class="mat-list-sub">${c.translit} — ${c.ru}</span></div>
+        </div>
+        <button class="lesson-del-btn" data-del-card="${c.id}">Удалить</button>
+      </div>`).join('');
+    cardsListEl.querySelectorAll('[data-del-card]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        await db.collection('flashcards').doc(btn.dataset.delCard).delete();
+        await renderMaterialsAdmin();
+      });
+    });
+  }
+
+  const quizListEl = document.getElementById('quizList');
+  const quizNames = Object.keys(quizzesMap);
+  if(!quizNames.length){
+    quizListEl.innerHTML = '<div class="empty-state">Пока нет вопросов.</div>';
+  } else {
+    quizListEl.innerHTML = quizNames.map(name => `
+      <div style="margin-bottom:16px;">
+        <div class="mat-list-cat" style="margin-bottom:6px;">${name} (${quizzesMap[name].length})</div>
+        ${quizzesMap[name].map(q => `
+          <div class="mat-list-item">
+            <div class="mat-list-item-body">
+              <div class="mat-list-main">${q.ar ? `<span class="mat-list-ar arabic">${q.ar}</span>` : ''}<span class="mat-list-sub">${q.q}</span></div>
+              <div class="mat-q-options">${q.options.map((o,i)=> i===q.correct ? `<span class="mat-q-correct">${o} ✓</span>` : o).join(' · ')}</div>
+            </div>
+            <button class="lesson-del-btn" data-del-q="${q.id}">Удалить</button>
+          </div>`).join('')}
+      </div>`).join('');
+    quizListEl.querySelectorAll('[data-del-q]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        await db.collection('quizQuestions').doc(btn.dataset.delQ).delete();
+        await renderMaterialsAdmin();
+      });
+    });
+  }
+}
+
+document.getElementById('addCardBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('cardError');
+  const category = document.getElementById('newCardCat').value.trim();
+  const ar = document.getElementById('newCardAr').value.trim();
+  const translit = document.getElementById('newCardTranslit').value.trim();
+  const ru = document.getElementById('newCardRu').value.trim();
+  if(!category || !ar || !ru){ errEl.textContent = 'Заполните категорию, слово и перевод.'; return; }
+  errEl.textContent = '';
+  try{
+    await db.collection('flashcards').add({ category, ar, translit, ru });
+  }catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
+  document.getElementById('newCardAr').value = '';
+  document.getElementById('newCardTranslit').value = '';
+  document.getElementById('newCardRu').value = '';
+  await renderMaterialsAdmin();
+});
+
+document.getElementById('addQBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('qError');
+  const quizName = document.getElementById('newQQuizName').value.trim();
+  const ar = document.getElementById('newQAr').value.trim();
+  const q = document.getElementById('newQText').value.trim();
+  const options = [
+    document.getElementById('newQOpt0').value.trim(),
+    document.getElementById('newQOpt1').value.trim(),
+    document.getElementById('newQOpt2').value.trim()
+  ];
+  const correct = parseInt(document.querySelector('input[name="newQCorrect"]:checked').value);
+  if(!quizName || !q || options.some(o=>!o)){ errEl.textContent = 'Заполните название квиза, вопрос и все три варианта.'; return; }
+  errEl.textContent = '';
+  try{
+    await db.collection('quizQuestions').add({ quizName, ar, q, options, correct });
+  }catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
+  document.getElementById('newQAr').value = '';
+  document.getElementById('newQText').value = '';
+  document.getElementById('newQOpt0').value = '';
+  document.getElementById('newQOpt1').value = '';
+  document.getElementById('newQOpt2').value = '';
+  document.querySelector('input[name="newQCorrect"][value="0"]').checked = true;
+  await renderMaterialsAdmin();
+});
+
+document.getElementById('seedFlashcardsBtn').addEventListener('click', async ()=>{
+  if(!confirm('Добавить демо-карточки (Алгебра, Геометрия, Дроби, Проценты) в базу?')) return;
+  const writes = [];
+  Object.entries(SEED_FLASHCARDS).forEach(([category, arr])=>{
+    arr.forEach(([ar,translit,ru])=>{
+      writes.push(db.collection('flashcards').add({ category, ar, translit, ru }));
+    });
+  });
+  await Promise.all(writes);
+  await renderMaterialsAdmin();
+});
+document.getElementById('seedQuizBtn').addEventListener('click', async ()=>{
+  if(!confirm('Добавить демо-квиз «Основы математики» в базу?')) return;
+  const writes = SEED_QUIZ.map(q => db.collection('quizQuestions').add({ ...q, quizName: 'Основы математики' }));
+  await Promise.all(writes);
+  await renderMaterialsAdmin();
+});
+
+/* ================= NAVIGATION HELPER ================= */
+function goToTab(name){
+  activateTab(name);
+}
+
+/* ================= DAILY GOAL ================= */
+function bumpDailyGoal(amount){
+  const today = todayStr();
+  if(!progress.dailyGoal || progress.dailyGoal.date !== today){ progress.dailyGoal = { date: today, count: 0 }; }
+  progress.dailyGoal.count += amount;
+  saveProgress(studentId, progress);
+}
+
+/* ================= HOME DASHBOARD ================= */
+async function renderHome(){
+  const totalLetters = MULT.length;
+  const lettersCount = progress.seenLetters.length;
+  const pct = Math.round((lettersCount/totalLetters)*100);
+  const circumference = 238.76;
+  document.getElementById('homeRingProgress').style.strokeDashoffset = circumference - (circumference*pct/100);
+  document.getElementById('homeRingPct').textContent = pct+'%';
+  document.getElementById('homeStatLetters').textContent = `${lettersCount}/${totalLetters}`;
+  const totalQ = progress.quizHistory.length;
+  document.getElementById('homeStatQuizzes').textContent = totalQ;
+  const avg = totalQ ? Math.round(progress.quizHistory.reduce((s,h)=>s+(h.score/h.total),0)/totalQ*100) : 0;
+  document.getElementById('homeStatAvg').textContent = totalQ ? avg+'%' : '—';
+
+  const today = todayStr();
+  const goalCount = (progress.dailyGoal && progress.dailyGoal.date === today) ? progress.dailyGoal.count : 0;
+  const goalTarget = 10;
+  document.getElementById('homeGoalFill').style.width = Math.min(100, Math.round(goalCount/goalTarget*100))+'%';
+  document.getElementById('homeGoalCount').textContent = `${Math.min(goalCount,goalTarget)} / ${goalTarget}`;
+
+  // continue learning
+  const continueRow = document.getElementById('homeContinueRow');
+  const items = [];
+  if(progress.lastLesson){
+    items.push({
+      title: 'Урок: '+progress.lastLesson.title, sub: 'Продолжить с того же места',
+      action: ()=>{ goToTab('lessons'); setTimeout(()=>{
+        if(progress.lastLesson.id === '__alphabet'){ openLessonDetail({id:'__alphabet', title:'Таблица умножения', isAlphabet:true}); }
+      }, 50); }, label:'Продолжить'
+    });
+  }
+  if(progress.quizHistory.length){
+    const last = progress.quizHistory[progress.quizHistory.length-1];
+    items.push({
+      title: 'Квиз: '+(last.quizName||'Квиз'), sub: `Последний результат ${last.score}/${last.total}`,
+      action: ()=>{ currentQuizName = last.quizName; goToTab('quiz'); }, label:'Повторить'
+    });
+  }
+  if(!items.length){
+    continueRow.innerHTML = `<div class="empty-state" style="padding:10px 0;">Вы ещё не начинали заниматься — откройте раздел «Уроки», чтобы стартовать.</div>`;
+  } else {
+    continueRow.innerHTML = items.map((it,i)=>`
+      <div class="home-continue-item">
+        <div class="home-continue-info"><strong>${it.title}</strong><span class="home-continue-sub">${it.sub}</span></div>
+        <button class="home-go-btn" data-continue-i="${i}">${it.label}</button>
+      </div>`).join('');
+    continueRow.querySelectorAll('[data-continue-i]').forEach(btn=>{
+      btn.addEventListener('click', ()=> items[parseInt(btn.dataset.continueI)].action());
+    });
+  }
+
+  buildPracticeTiles('homePracticeTiles');
+}
+
+function buildPracticeTiles(containerId){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const catCount = Object.keys(flashcardsData).length;
+  const ICONS = {
+    dict: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6"><path d="M12 6.5c-1.8-1.4-4.4-1.8-7.5-1.5v13c3.1-.3 5.7.1 7.5 1.5 1.8-1.4 4.4-1.8 7.5-1.5v-13c-3.1-.3-5.7.1-7.5 1.5Z" stroke-linejoin="round"/><path d="M12 6.5v13" stroke-linecap="round"/></svg>',
+    ear: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="12" r="2.4"/><path d="M12.5 6.5a7 7 0 0 1 0 11"/><path d="M15 8.7a4 4 0 0 1 0 6.6"/><path d="M17.5 6a9.8 9.8 0 0 1 0 12"/></svg>',
+    scroll: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linejoin="round"><path d="M6 4.5h9c1.4 0 2.5 1.1 2.5 2.5v11" stroke-linecap="round"/><path d="M6 4.5A2 2 0 0 0 4 6.5v11a2 2 0 0 0 2 2h11.5c-1.4 0-2.5-1.1-2.5-2.5V7" stroke-linecap="round"/><path d="M8 9h6M8 12.5h6M8 16h3.5" stroke-linecap="round"/></svg>',
+    pen: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19l1-4.2L14.8 6a1.8 1.8 0 0 1 2.5 0l.7.7a1.8 1.8 0 0 1 0 2.5L9.2 18Z"/><path d="M13 7.8l3.2 3.2"/><path d="M5 19h4.2"/></svg>'
+  };
+  const tiles = [
+    { icon:ICONS.dict, title:'Формулы', sub:`${catCount} тем`, tab:'flashcards' },
+    { icon:ICONS.ear, title:'Устный счёт', sub:'Быстрые тренировки', tab:'listening' },
+    { icon:ICONS.scroll, title:'Задачи', sub:'Текстовые задачи', tab:'reading' },
+    { icon:ICONS.pen, title:'Контрольные', sub:'Подготовка к контрольным', tab:'writing' }
+  ];
+  el.innerHTML = tiles.map((t,i)=>`
+    <button class="practice-tile" data-tile-i="${i}">
+      <div class="practice-tile-icon">${t.icon}</div>
+      <div class="practice-tile-title">${t.title}</div>
+      <div class="practice-tile-sub">${t.sub}</div>
+    </button>`).join('');
+  el.querySelectorAll('[data-tile-i]').forEach(btn=>{
+    btn.addEventListener('click', ()=> goToTab(tiles[parseInt(btn.dataset.tileI)].tab));
+  });
+}
+async function renderPracticeHub(){
+  buildPracticeTiles('practicePageTiles');
+}
+
+/* ================= LESSONS & GRAMMAR (content) ================= */
+async function loadLessonNotes(){
+  try{
+    const snap = await db.collection('lessonNotes').get();
+    return snap.docs.map(d=>({ id:d.id, ...d.data() }));
+  }catch(e){ console.error('load lesson notes failed', e); return []; }
+}
+async function loadGrammarNotes(){
+  try{
+    const snap = await db.collection('grammarNotes').get();
+    return snap.docs.map(d=>({ id:d.id, ...d.data() }));
+  }catch(e){ console.error('load grammar notes failed', e); return []; }
+}
+async function renderLessonsList(){
+  const list = await loadLessonNotes();
+  const grid = document.getElementById('lessonsCardGrid');
+  document.getElementById('lessonsListView').style.display = 'block';
+  document.getElementById('lessonsDetailView').style.display = 'none';
+  const cards = [{ id:'__alphabet', title:'Таблица умножения', isAlphabet:true }].concat(list);
+  grid.innerHTML = cards.map((l,i) => `
+    <div class="lesson-card" data-lesson-i="${i}">
+      <div class="lesson-card-icon">${l.isAlphabet ? '🔢' : '📖'}</div>
+      <div class="lesson-card-num">Урок ${i+1}</div>
+      <div class="lesson-card-title">${l.title}</div>
+    </div>`).join('');
+  grid.querySelectorAll('[data-lesson-i]').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const l = cards[parseInt(card.dataset.lessonI)];
+      openLessonDetail(l);
+    });
+  });
+}
+function openLessonDetail(l){
+  document.getElementById('lessonsListView').style.display = 'none';
+  document.getElementById('lessonsDetailView').style.display = 'block';
+  if(l.isAlphabet){
+    document.getElementById('lessonDetailAlphabet').style.display = 'block';
+    document.getElementById('lessonDetailNote').style.display = 'none';
+    initAlphabet();
+  } else {
+    document.getElementById('lessonDetailAlphabet').style.display = 'none';
+    document.getElementById('lessonDetailNote').style.display = 'block';
+    document.getElementById('lessonDetailTitle').textContent = l.title;
+    document.getElementById('lessonDetailBody').textContent = l.body || '';
+  }
+  progress.lastLesson = { id: l.id, title: l.isAlphabet ? 'Таблица умножения' : l.title };
+  progress.completedLessons = progress.completedLessons || {};
+  progress.completedLessons[l.id] = true;
+  saveProgress(studentId, progress);
+}
+document.getElementById('lessonBackBtn').addEventListener('click', renderLessonsList);
+
+async function renderGrammarList(){
+  const list = await loadGrammarNotes();
+  const grid = document.getElementById('grammarCardGrid');
+  document.getElementById('grammarListView').style.display = 'block';
+  document.getElementById('grammarDetailView').style.display = 'none';
+  if(!list.length){ grid.innerHTML = '<div class="empty-state">Пока нет тем — преподаватель ещё не добавил объяснения.</div>'; return; }
+  grid.innerHTML = list.map((g,i) => `
+    <div class="lesson-card" data-grammar-i="${i}">
+      <div class="lesson-card-icon">📐</div>
+      <div class="lesson-card-title">${g.title}</div>
+    </div>`).join('');
+  grid.querySelectorAll('[data-grammar-i]').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const g = list[parseInt(card.dataset.grammarI)];
+      document.getElementById('grammarListView').style.display = 'none';
+      document.getElementById('grammarDetailView').style.display = 'block';
+      document.getElementById('grammarDetailTitle').textContent = g.title;
+      document.getElementById('grammarDetailBody').textContent = g.body || '';
+    });
+  });
+}
+document.getElementById('grammarBackBtn').addEventListener('click', renderGrammarList);
+
+/* ---- LISTENING / READING / WRITING (student, read-only) ---- */
+async function loadTasks(collection){
+  try{
+    const snap = await db.collection(collection).get();
+    return snap.docs.map(d=>({ id:d.id, ...d.data() }));
+  }catch(e){ console.error('load tasks failed', e); return []; }
+}
+function renderTaskListInto(elId, list, emptyMsg){
+  const el = document.getElementById(elId);
+  if(!list.length){ el.innerHTML = `<div class="empty-state">${emptyMsg}</div>`; return; }
+  el.innerHTML = list.map(t => `
+    <div class="content-note">
+      <div class="content-note-title">${t.title}</div>
+      <div class="content-note-body">${(t.body||'').replace(/</g,'&lt;')}</div>
+      ${t.link ? `<a class="task-link-btn" href="${t.link}" target="_blank" rel="noopener">Открыть материал ↗</a>` : ''}
+    </div>`).join('');
+}
+async function renderListeningList(){ renderTaskListInto('listeningList', await loadTasks('listeningTasks'), 'Пока нет заданий на устный счёт.'); }
+async function renderReadingList(){ renderTaskListInto('readingList', await loadTasks('readingTasks'), 'Пока нет задач.'); }
+async function renderWritingList(){ renderTaskListInto('writingList', await loadTasks('writingTasks'), 'Пока нет заданий для контрольных.'); }
+
+/* ---- ADMIN: content management ---- */
+async function renderContentAdmin(){
+  const lessons = await loadLessonNotes();
+  const grammar = await loadGrammarNotes();
+  const lEl = document.getElementById('lessonNotesList');
+  lEl.innerHTML = !lessons.length ? '<div class="empty-state">Пока нет дополнительных уроков (Урок 1 — Таблица умножения есть всегда).</div>' : lessons.map(l=>`
+    <div class="mat-list-item">
+      <div class="mat-list-item-body"><div class="mat-list-sub" style="font-weight:700; color:var(--text);">${l.title}</div></div>
+      <button class="lesson-del-btn" data-del-lesson="${l.id}">Удалить</button>
+    </div>`).join('');
+  lEl.querySelectorAll('[data-del-lesson]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{ await db.collection('lessonNotes').doc(btn.dataset.delLesson).delete(); await renderContentAdmin(); });
+  });
+  const gEl = document.getElementById('grammarNotesList');
+  gEl.innerHTML = !grammar.length ? '<div class="empty-state">Пока нет тем.</div>' : grammar.map(g=>`
+    <div class="mat-list-item">
+      <div class="mat-list-item-body"><div class="mat-list-sub" style="font-weight:700; color:var(--text);">${g.title}</div></div>
+      <button class="lesson-del-btn" data-del-grammar="${g.id}">Удалить</button>
+    </div>`).join('');
+  gEl.querySelectorAll('[data-del-grammar]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{ await db.collection('grammarNotes').doc(btn.dataset.delGrammar).delete(); await renderContentAdmin(); });
+  });
+}
+document.getElementById('addLessonNoteBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('lessonNoteError');
+  const title = document.getElementById('newLessonTitle').value.trim();
+  const body = document.getElementById('newLessonBody').value.trim();
+  if(!title || !body){ errEl.textContent = 'Заполните заголовок и текст.'; return; }
+  errEl.textContent = '';
+  try{ await db.collection('lessonNotes').add({ title, body }); }
+  catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
+  document.getElementById('newLessonTitle').value = '';
+  document.getElementById('newLessonBody').value = '';
+  await renderContentAdmin();
+});
+document.getElementById('addGrammarNoteBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('grammarNoteError');
+  const title = document.getElementById('newGrammarTitle').value.trim();
+  const body = document.getElementById('newGrammarBody').value.trim();
+  if(!title || !body){ errEl.textContent = 'Заполните заголовок и текст.'; return; }
+  errEl.textContent = '';
+  try{ await db.collection('grammarNotes').add({ title, body }); }
+  catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
+  document.getElementById('newGrammarTitle').value = '';
+  document.getElementById('newGrammarBody').value = '';
+  await renderContentAdmin();
+});
+
+/* ---- ADMIN: tasks (listening/reading/writing) ---- */
+function taskAdminRow(t, collection, refreshFn){
+  return `
+    <div class="mat-list-item">
+      <div class="mat-list-item-body"><div class="mat-list-sub" style="font-weight:700; color:var(--text);">${t.title}</div></div>
+      <button class="lesson-del-btn" data-del-task="${t.id}" data-coll="${collection}">Удалить</button>
+    </div>`;
+}
+async function renderTasksAdmin(){
+  const listen = await loadTasks('listeningTasks');
+  const read = await loadTasks('readingTasks');
+  const write = await loadTasks('writingTasks');
+  document.getElementById('listenTasksList').innerHTML = !listen.length ? '<div class="empty-state">Пока нет заданий.</div>' : listen.map(t=>taskAdminRow(t,'listeningTasks')).join('');
+  document.getElementById('readTasksList').innerHTML = !read.length ? '<div class="empty-state">Пока нет заданий.</div>' : read.map(t=>taskAdminRow(t,'readingTasks')).join('');
+  document.getElementById('writeTasksList').innerHTML = !write.length ? '<div class="empty-state">Пока нет заданий.</div>' : write.map(t=>taskAdminRow(t,'writingTasks')).join('');
+  document.querySelectorAll('[data-del-task]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      await db.collection(btn.dataset.coll).doc(btn.dataset.delTask).delete();
+      await renderTasksAdmin();
+    });
+  });
+}
+document.getElementById('addListenBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('listenError');
+  const title = document.getElementById('newListenTitle').value.trim();
+  const body = document.getElementById('newListenBody').value.trim();
+  const link = document.getElementById('newListenLink').value.trim();
+  if(!title || !body){ errEl.textContent = 'Заполните заголовок и описание.'; return; }
+  errEl.textContent = '';
+  try{ await db.collection('listeningTasks').add({ title, body, link }); }
+  catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
+  document.getElementById('newListenTitle').value = '';
+  document.getElementById('newListenBody').value = '';
+  document.getElementById('newListenLink').value = '';
+  await renderTasksAdmin();
+});
+document.getElementById('addReadBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('readError');
+  const title = document.getElementById('newReadTitle').value.trim();
+  const body = document.getElementById('newReadBody').value.trim();
+  const link = document.getElementById('newReadLink').value.trim();
+  if(!title || !body){ errEl.textContent = 'Заполните заголовок и текст.'; return; }
+  errEl.textContent = '';
+  try{ await db.collection('readingTasks').add({ title, body, link }); }
+  catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
+  document.getElementById('newReadTitle').value = '';
+  document.getElementById('newReadBody').value = '';
+  document.getElementById('newReadLink').value = '';
+  await renderTasksAdmin();
+});
+document.getElementById('addWriteBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('writeError');
+  const title = document.getElementById('newWriteTitle').value.trim();
+  const body = document.getElementById('newWriteBody').value.trim();
+  const link = document.getElementById('newWriteLink').value.trim();
+  if(!title || !body){ errEl.textContent = 'Заполните заголовок и описание.'; return; }
+  errEl.textContent = '';
+  try{ await db.collection('writingTasks').add({ title, body, link }); }
+  catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
+  document.getElementById('newWriteTitle').value = '';
+  document.getElementById('newWriteBody').value = '';
+  document.getElementById('newWriteLink').value = '';
+  await renderTasksAdmin();
+});
+</script>
+</body>
+</html>
