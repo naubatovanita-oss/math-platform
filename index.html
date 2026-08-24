@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Аксиома — платформа для учеников по математике</title>
+<title>Цифровой класс — платформа для учеников по математике</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -53,7 +53,7 @@
     background: radial-gradient(ellipse at top, #4A2318 0%, #2D120D 60%, #1B0C08 100%);
   }
   .hero-word{
-    font-family:'JetBrains Mono', monospace; font-size:clamp(48px,10vw,100px); font-weight:700;
+    font-family:'JetBrains Mono', monospace; font-size:clamp(32px,7vw,58px); font-weight:700;
     color:var(--gold-soft);
     letter-spacing:2px;
     opacity:0;
@@ -534,10 +534,9 @@
 
   <!-- LOGIN -->
   <div id="loginScreen">
-    <div class="hero-word arabic">АКСИОМА</div>
-    <div class="hero-sub">аксиома — утверждение, из которого строится всё остальное</div>
+    <div class="hero-word arabic">Цифровой класс</div>
     <div class="hero-title">Платформа для учеников по математике</div>
-    <div class="hero-desc">Формулы, практика, квизы и отслеживание прогресса — в одном месте.</div>
+    <div class="hero-desc">Теория, практика, домашние задания и отслеживание прогресса — в одном месте.</div>
 
     <div class="login-card">
       <div class="role-toggle">
@@ -575,7 +574,7 @@
   <div id="adminScreen">
     <header class="topbar">
       <div class="brand">
-        <div class="brand-word arabic">Аксиома</div>
+        <div class="brand-word arabic">Цифровой класс</div>
         <div class="brand-name">Панель преподавателя</div>
       </div>
       <button class="logout-btn" id="adminLogoutBtn">Выйти</button>
@@ -584,9 +583,8 @@
       <div class="admin-subnav">
         <button class="admin-subnav-btn active" id="adminNavStudents">Ученики</button>
         <button class="admin-subnav-btn" id="adminNavSchedule">Расписание</button>
-        <button class="admin-subnav-btn" id="adminNavMaterials">Формулы и квиз</button>
-        <button class="admin-subnav-btn" id="adminNavContent">Уроки и теория</button>
-        <button class="admin-subnav-btn" id="adminNavTasks">Задания</button>
+        <button class="admin-subnav-btn" id="adminNavContent">Теория</button>
+        <button class="admin-subnav-btn" id="adminNavTasks">Домашняя работа</button>
       </div>
 
       <div class="admin-view active" id="adminViewStudents">
@@ -608,7 +606,7 @@
           <div class="admin-card-title">Ученики и прогресс</div>
           <table class="students-table" id="studentsTable">
             <thead>
-              <tr><th>Имя</th><th>Логин</th><th>Код</th><th>Табл.</th><th>Квизов</th><th>Средний балл</th><th></th></tr>
+              <tr><th>Имя</th><th>Логин</th><th>Код</th><th>Дз выполнено</th><th></th></tr>
             </thead>
             <tbody id="studentsTableBody"></tbody>
           </table>
@@ -672,52 +670,7 @@
         </div>
       </div>
 
-      <div class="admin-view" id="adminViewMaterials">
-        <div class="admin-card">
-          <div class="admin-card-title">Формулы для повторения</div>
-          <button class="mat-seed-btn" id="seedFlashcardsBtn">Загрузить стартовый набор (демо-карточки)</button>
-          <div class="mat-form-grid">
-            <div class="field"><label>Категория</label><input type="text" id="newCardCat" placeholder="Например, Алгебра" list="catList"><datalist id="catList"></datalist></div>
-            <div class="field"><label>Формула</label><input type="text" id="newCardAr" placeholder="a² - b² = (a-b)(a+b)"></div>
-            <div class="field"><label>Краткое название</label><input type="text" id="newCardTranslit" placeholder="Разность квадратов"></div>
-            <div class="field"><label>Пояснение</label><input type="text" id="newCardRu" placeholder="Формула сокращённого умножения"></div>
-          </div>
-          <button class="btn-primary" id="addCardBtn" style="max-width:200px;">Добавить карточку</button>
-          <div class="login-error" id="cardError"></div>
-          <div style="margin-top:18px;" id="cardsList"></div>
-        </div>
-
-        <div class="admin-card">
-          <div class="admin-card-title">Вопросы для квиза</div>
-          <button class="mat-seed-btn" id="seedQuizBtn">Загрузить стартовый набор (демо-вопросы)</button>
-          <div class="field"><label>Название квиза</label><input type="text" id="newQQuizName" placeholder="Например, Основы математики" list="quizNameList"><datalist id="quizNameList"></datalist></div>
-          <div class="field"><label>Формула (необязательно)</label><input type="text" id="newQAr" placeholder="Оставьте пустым, если не нужно"></div>
-          <div class="field"><label>Текст вопроса</label><input type="text" id="newQText" placeholder="Например, чему равно это выражение?"></div>
-          <div class="mat-form-grid">
-            <div class="field"><label>Вариант 1</label><input type="text" id="newQOpt0"></div>
-            <div class="field"><label>Вариант 2</label><input type="text" id="newQOpt1"></div>
-            <div class="field"><label>Вариант 3</label><input type="text" id="newQOpt2"></div>
-          </div>
-          <div class="radio-row">
-            <label><input type="radio" name="newQCorrect" value="0" checked> Верный: вариант 1</label>
-            <label><input type="radio" name="newQCorrect" value="1"> Верный: вариант 2</label>
-            <label><input type="radio" name="newQCorrect" value="2"> Верный: вариант 3</label>
-          </div>
-          <button class="btn-primary" id="addQBtn" style="max-width:200px; margin-top:14px;">Добавить вопрос</button>
-          <div class="login-error" id="qError"></div>
-          <div style="margin-top:18px;" id="quizList"></div>
-        </div>
-      </div>
-
       <div class="admin-view" id="adminViewContent">
-        <div class="admin-card">
-          <div class="admin-card-title">Уроки</div>
-          <div class="field"><label>Заголовок</label><input type="text" id="newLessonTitle" placeholder="Например, Урок 2. Проценты"></div>
-          <div class="field"><label>Текст урока</label><textarea id="newLessonBody" rows="4" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Текст, который увидит ученик"></textarea></div>
-          <button class="btn-primary" id="addLessonNoteBtn" style="max-width:200px;">Добавить урок</button>
-          <div class="login-error" id="lessonNoteError"></div>
-          <div style="margin-top:18px;" id="lessonNotesList"></div>
-        </div>
         <div class="admin-card">
           <div class="admin-card-title">Теория</div>
           <div class="field"><label>Заголовок темы</label><input type="text" id="newGrammarTitle" placeholder="Например, Теорема Пифагора"></div>
@@ -764,25 +717,16 @@
   <div id="appScreen">
     <aside class="sidebar">
       <div class="sidebar-brand">
-        <div class="sidebar-brand-word arabic">Аксиома</div>
+        <div class="sidebar-brand-word arabic">Цифровой класс</div>
         <div class="sidebar-brand-sub">Математика</div>
       </div>
       <nav class="sidebar-nav">
         <button class="sidebar-tab-btn active" data-tab="home"><span class="tab-icon">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 10 L10 3.5 L17 10" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 8.5 V16.5 H15 V8.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 16.5 V12 H11.5 V16.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>Главная</button>
-        <button class="sidebar-tab-btn" data-tab="flashcards"><span class="tab-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 5.5 C8.5 4.3 6 4 3.5 4.3 V15 C6 14.7 8.5 15 10 16.2 C11.5 15 14 14.7 16.5 15 V4.3 C14 4 11.5 4.3 10 5.5 Z" stroke-linejoin="round"/><path d="M10 5.5 V16.2" stroke-linecap="round"/></svg>
-        </span>Формулы</button>
-        <button class="sidebar-tab-btn" data-tab="quiz"><span class="tab-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M10 2 L11.8 7.2 L17 8 L13 11.6 L14.2 17 L10 14.2 L5.8 17 L7 11.6 L3 8 L8.2 7.2 Z" stroke-linejoin="round"/></svg>
-        </span>Квиз</button>
         <button class="sidebar-tab-btn" data-tab="practice"><span class="tab-icon">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.6"/><circle cx="10" cy="10" r="0.9" fill="currentColor" stroke="none"/></svg>
-        </span>Практика</button>
-        <button class="sidebar-tab-btn" data-tab="lessons"><span class="tab-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 5 C4 4 4.8 3.5 6 3.5 H14 C15.2 3.5 16 4 16 5 V16.5 C16 15.5 15.2 15 14 15 H6 C4.8 15 4 15.5 4 16.5 Z" stroke-linejoin="round"/><path d="M10 3.5 V15" stroke-linecap="round"/></svg>
-        </span>Уроки</button>
+        </span>Домашняя работа</button>
         <button class="sidebar-tab-btn" data-tab="grammar"><span class="tab-icon">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="4" width="12" height="12" transform="rotate(45 10 10)" stroke-linejoin="round"/><rect x="7.3" y="7.3" width="5.4" height="5.4" transform="rotate(45 10 10)" stroke-linejoin="round"/></svg>
         </span>Теория</button>
@@ -844,7 +788,7 @@
           </div>
         </div>
 
-        <div class="home-grid">
+        <div class="home-grid" style="grid-template-columns:1fr;">
           <div class="home-card home-card-dark">
             <div class="home-card-title">Твой прогресс</div>
             <div class="home-stat-row">
@@ -856,64 +800,11 @@
                 <div class="home-stat-ring-label"><div class="home-stat-ring-num" id="homeRingPct">0%</div></div>
               </div>
               <div class="home-stat-list">
-                <div>Табл. умножения <strong id="homeStatLetters">0/45</strong></div>
-                <div>Квизов пройдено <strong id="homeStatQuizzes">0</strong></div>
-                <div>Средний балл <strong id="homeStatAvg">—</strong></div>
+                <div>Домашних заданий выполнено <strong id="homeStatHomework">0/0</strong></div>
               </div>
             </div>
           </div>
-          <div class="home-card">
-            <div class="home-card-title">Цель дня</div>
-            <div class="home-goal-label" id="homeGoalLabel">Повторите 10 карточек с формулами сегодня</div>
-            <div class="home-goal-track"><div class="home-goal-fill" id="homeGoalFill" style="width:0%"></div></div>
-            <div class="home-goal-label" id="homeGoalCount">0 / 10</div>
-          </div>
         </div>
-
-        <div class="home-card" style="margin-bottom:18px;">
-          <div class="home-card-title">Продолжить обучение</div>
-          <div class="home-continue-row" id="homeContinueRow"></div>
-        </div>
-
-        <div class="section-title" style="margin-bottom:14px;">Практика на сегодня</div>
-        <div class="practice-tiles" id="homePracticeTiles"></div>
-      </section>
-
-      <!-- MULTIPLICATION TABLE -->
-      <!-- FLASHCARDS -->
-      <section class="section" id="section-flashcards">
-        <div class="section-title">Формулы</div>
-        <div class="section-desc">Карточки для повторения формул по темам. Нажмите на карточку, чтобы увидеть объяснение.</div>
-        <div class="category-row" id="catRow"></div>
-        <div class="flash-wrap">
-          <div class="flashcard" id="flashcard">
-            <div class="flashcard-inner">
-              <div class="flashcard-face front">
-                <div class="flash-ar arabic" id="flashAr"></div>
-                <div class="flash-translit" id="flashTranslit"></div>
-                <div class="flash-tap-hint">нажмите, чтобы перевернуть</div>
-              </div>
-              <div class="flashcard-face back">
-                <div class="flash-ru" id="flashRu"></div>
-                <div class="flash-tap-hint">нажмите ещё раз</div>
-              </div>
-            </div>
-          </div>
-          <div class="flash-controls">
-            <button class="flash-nav-btn" id="flashPrev">‹</button>
-            <span class="flash-progress" id="flashProgress"></span>
-            <button class="flash-nav-btn" id="flashNext">›</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- QUIZ -->
-      <section class="section" id="section-quiz">
-        <div class="section-title">Проверь себя</div>
-        <div class="section-desc">Выберите квиз и проверьте свои знания.</div>
-        <div class="category-row" id="quizCatRow"></div>
-        <div class="quiz-progress-bar" id="quizProgressBar" style="display:none;"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div></div>
-        <div id="quizBody"></div>
       </section>
 
       <!-- PRACTICE HUB -->
@@ -923,30 +814,7 @@
         <div class="practice-tiles" id="practicePageTiles"></div>
       </section>
 
-      <!-- LESSONS -->
-      <section class="section" id="section-lessons">
-        <div id="lessonsListView">
-          <div class="section-title">Уроки</div>
-          <div class="section-desc">Нажмите на урок, чтобы открыть его.</div>
-          <div class="lesson-card-grid" id="lessonsCardGrid"></div>
-        </div>
-        <div id="lessonsDetailView" style="display:none;">
-          <button class="back-btn" id="lessonBackBtn">‹ Все уроки</button>
-          <div id="lessonDetailAlphabet" style="display:none;">
-            <div class="section-title" style="margin-top:14px;">Урок 1: Таблица умножения</div>
-            <div class="section-desc">Нажмите на пример, чтобы отметить его как выученный.</div>
-            <div class="letter-grid" id="letterGrid"></div>
-          </div>
-          <div id="lessonDetailNote" style="display:none;">
-            <div class="content-note" style="margin-top:14px;">
-              <div class="content-note-title" id="lessonDetailTitle"></div>
-              <div class="content-note-body" id="lessonDetailBody"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- GRAMMAR -->
+      <!-- THEORY -->
       <section class="section" id="section-grammar">
         <div id="grammarListView">
           <div class="section-title">Теория</div>
@@ -986,12 +854,8 @@
       <!-- PROGRESS -->
       <section class="section" id="section-progress">
         <div class="section-title">Ваш прогресс</div>
-        <div class="section-desc">Статистика по всем разделам платформы.</div>
+        <div class="section-desc">Статистика по выполнению домашних заданий.</div>
         <div class="stat-grid" id="statGrid"></div>
-        <div>
-          <div style="font-size:15px; font-weight:700; margin-bottom:10px;">История квизов</div>
-          <div id="quizHistory"></div>
-        </div>
       </section>
 
       <!-- SCHEDULE (student, read-only) -->
@@ -1031,90 +895,9 @@ const db = firebase.firestore();
 /* ================= DATA ================= */
 const TEACHER_PASSWORD = "teacher2026"; // поменяйте на свой пароль
 
-const MULT = (function(){
-  const out = [];
-  for(let a=1; a<=9; a++){
-    for(let b=a; b<=9; b++){
-      out.push([`${a} × ${b}`, "=", String(a*b)]);
-    }
-  }
-  return out;
-})();
-
-const SEED_FLASHCARDS = {
-  "Алгебра":[
-    ["a² - b² = (a-b)(a+b)","Разность квадратов","Формула сокращённого умножения"],
-    ["(a+b)² = a² + 2ab + b²","Квадрат суммы","Формула сокращённого умножения"],
-    ["(a-b)² = a² - 2ab + b²","Квадрат разности","Формула сокращённого умножения"],
-    ["x = (-b ± √(b²-4ac)) / 2a","Корни квадратного уравнения","Через дискриминант D = b²-4ac"]
-  ],
-  "Геометрия":[
-    ["S = πr²","Площадь круга","r — радиус окружности"],
-    ["P = 2(a+b)","Периметр прямоугольника","a и b — стороны"],
-    ["S = (a×h)/2","Площадь треугольника","a — основание, h — высота"],
-    ["a² + b² = c²","Теорема Пифагора","c — гипотенуза прямоугольного треугольника"]
-  ],
-  "Дроби":[
-    ["a/b + c/d = (ad+bc)/bd","Сложение дробей","Приведение к общему знаменателю"],
-    ["a/b × c/d = ac/bd","Умножение дробей","Числитель на числитель, знаменатель на знаменатель"],
-    ["a/b ÷ c/d = ad/bc","Деление дробей","Умножаем на перевёрнутую дробь"],
-    ["a/b = c/d ⟺ ad = bc","Основное свойство пропорции","Произведение крайних равно произведению средних"]
-  ],
-  "Проценты":[
-    ["a% от b = (a×b)/100","Нахождение процента от числа","Например, 20% от 150 = 30"],
-    ["b = (a×100)/p","Число по его проценту","p — процент, a — известная часть"],
-    ["Изменение = (новое-старое)/старое × 100%","Процентное изменение","Показывает рост или снижение в процентах"],
-    ["A = A₀(1+p/100)ⁿ","Сложные проценты","n — количество периодов начисления"]
-  ]
-};
-
-const SEED_QUIZ = [
-  {ar:"7 × 8", q:"Чему равно это произведение?", options:["54","56","64"], correct:1},
-  {ar:"", q:"Как называется число под знаком корня?", options:["Показатель","Подкоренное выражение","Основание"], correct:1},
-  {ar:"(x+3)²", q:"Раскройте скобки:", options:["x²+9","x²+6x+9","x²+3x+9"], correct:1},
-  {ar:"", q:"Сумма углов треугольника равна:", options:["90°","180°","360°"], correct:1},
-  {ar:"3/4 + 1/4", q:"Чему равна эта сумма?", options:["1/2","1","4/16"], correct:1},
-  {ar:"", q:"Треугольник со сторонами 3, 4 и 5 называют:", options:["Равносторонним","Египетским","Тупоугольным"], correct:1},
-  {ar:"20% от 300", q:"Чему это равно?", options:["60","30","6"], correct:0},
-  {ar:"x² = 16", q:"Какие значения x являются решением?", options:["Только 4","Только -4","4 и -4"], correct:2}
-];
-
 /* ================= STATE ================= */
 let studentId = null;
 let studentName = null;
-let currentCat = null;
-let currentFlashCardId = null;
-let flashIndex = 0;
-let quizIndex = 0;
-let quizScore = 0;
-let quizAnswered = false;
-let flashcardsData = {}; // { category: [{id,ar,translit,ru}] }
-let quizzesData = {}; // { quizName: [{id,ar,q,options,correct}] }
-let currentQuizName = null;
-
-async function loadFlashcardsData(){
-  try{
-    const snap = await db.collection('flashcards').get();
-    const map = {};
-    snap.docs.forEach(d=>{
-      const c = d.data();
-      (map[c.category] = map[c.category] || []).push({ id:d.id, ar:c.ar, translit:c.translit, ru:c.ru });
-    });
-    return map;
-  }catch(e){ console.error('load flashcards failed', e); return {}; }
-}
-async function loadQuizzesData(){
-  try{
-    const snap = await db.collection('quizQuestions').get();
-    const map = {};
-    snap.docs.forEach(d=>{
-      const q = d.data();
-      const name = q.quizName || 'Общий квиз';
-      (map[name] = map[name] || []).push({ id:d.id, ar:q.ar, q:q.q, options:q.options, correct:q.correct });
-    });
-    return map;
-  }catch(e){ console.error('load quizzes failed', e); return {}; }
-}
 
 /* ================= STORAGE HELPERS ================= */
 async function loadProgress(id){
@@ -1184,9 +967,6 @@ async function doLogin(){
   document.getElementById('studentNameChip').textContent = studentName;
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'flex';
-  initAlphabet();
-  await initFlashcards();
-  await initQuiz();
   renderProgress();
   renderHomeworkBanner();
   renderHome();
@@ -1219,7 +999,7 @@ document.getElementById('adminLogoutBtn').addEventListener('click', ()=>{
 });
 
 document.getElementById('adminNavStudents').addEventListener('click', ()=>{
-  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
+  ['Students','Schedule','Content','Tasks'].forEach(k=>{
     document.getElementById('adminNav'+k).classList.remove('active');
     document.getElementById('adminView'+k).classList.remove('active');
   });
@@ -1227,7 +1007,7 @@ document.getElementById('adminNavStudents').addEventListener('click', ()=>{
   document.getElementById('adminViewStudents').classList.add('active');
 });
 document.getElementById('adminNavSchedule').addEventListener('click', async ()=>{
-  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
+  ['Students','Schedule','Content','Tasks'].forEach(k=>{
     document.getElementById('adminNav'+k).classList.remove('active');
     document.getElementById('adminView'+k).classList.remove('active');
   });
@@ -1235,17 +1015,8 @@ document.getElementById('adminNavSchedule').addEventListener('click', async ()=>
   document.getElementById('adminViewSchedule').classList.add('active');
   await initAdminSchedule();
 });
-document.getElementById('adminNavMaterials').addEventListener('click', async ()=>{
-  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
-    document.getElementById('adminNav'+k).classList.remove('active');
-    document.getElementById('adminView'+k).classList.remove('active');
-  });
-  document.getElementById('adminNavMaterials').classList.add('active');
-  document.getElementById('adminViewMaterials').classList.add('active');
-  await renderMaterialsAdmin();
-});
 document.getElementById('adminNavContent').addEventListener('click', async ()=>{
-  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
+  ['Students','Schedule','Content','Tasks'].forEach(k=>{
     document.getElementById('adminNav'+k).classList.remove('active');
     document.getElementById('adminView'+k).classList.remove('active');
   });
@@ -1254,7 +1025,7 @@ document.getElementById('adminNavContent').addEventListener('click', async ()=>{
   await renderContentAdmin();
 });
 document.getElementById('adminNavTasks').addEventListener('click', async ()=>{
-  ['Students','Schedule','Materials','Content','Tasks'].forEach(k=>{
+  ['Students','Schedule','Content','Tasks'].forEach(k=>{
     document.getElementById('adminNav'+k).classList.remove('active');
     document.getElementById('adminView'+k).classList.remove('active');
   });
@@ -1305,17 +1076,16 @@ async function renderAdmin(){
     return;
   }
   empty.style.display = 'none';
+  const allLessons = await loadLessons();
   const rows = await Promise.all(roster.map(async s=>{
     const p = await loadProgress(s.id);
-    const totalQ = p.quizHistory.length;
-    const avg = totalQ ? Math.round(p.quizHistory.reduce((sum,h)=>sum+(h.score/h.total),0)/totalQ*100) : 0;
+    const mine = allLessons.filter(l => l.studentIds.includes(s.id) && l.homework && l.homework.trim());
+    const done = mine.filter(l => p.homeworkDone && p.homeworkDone[l.id]).length;
     return `<tr>
       <td>${s.name}</td>
       <td class="login-cell">${s.id}</td>
       <td class="login-cell">${s.code}</td>
-      <td>${p.seenLetters.length}/${MULT.length}</td>
-      <td>${totalQ}</td>
-      <td>${totalQ ? avg+'%' : '—'}</td>
+      <td>${done}/${mine.length}</td>
       <td><button class="del-student-btn" data-id="${s.id}">Удалить</button></td>
     </tr>`;
   }));
@@ -1336,7 +1106,6 @@ function activateTab(tabName){
   if(tabName === 'schedule') initStudentSchedule();
   if(tabName === 'home') renderHome();
   if(tabName === 'practice') renderPracticeHub();
-  if(tabName === 'lessons') renderLessonsList();
   if(tabName === 'grammar') renderGrammarList();
   if(tabName === 'listening') renderListeningList();
   if(tabName === 'reading') renderReadingList();
@@ -1346,196 +1115,19 @@ document.querySelectorAll('.sidebar-tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=> activateTab(btn.dataset.tab));
 });
 
-/* ================= MULTIPLICATION TABLE ================= */
-function initAlphabet(){
-  const grid = document.getElementById('letterGrid');
-  grid.innerHTML = '';
-  MULT.forEach(([ar,translit,name])=>{
-    const card = document.createElement('div');
-    card.className = 'letter-card' + (progress.seenLetters.includes(ar) ? ' seen' : '');
-    card.innerHTML = `<div class="letter-ar arabic">${ar}</div><div class="letter-translit mono">${translit}</div><div class="letter-name">${name}</div>`;
-    card.addEventListener('click', ()=>{
-      if(!progress.seenLetters.includes(ar)){
-        progress.seenLetters.push(ar);
-        saveProgress(studentId, progress);
-        card.classList.add('seen');
-      }
-    });
-    grid.appendChild(card);
-  });
-}
-
-/* ================= FLASHCARDS ================= */
-async function initFlashcards(){
-  flashcardsData = await loadFlashcardsData();
-  const cats = Object.keys(flashcardsData);
-  const catRow = document.getElementById('catRow');
-  catRow.innerHTML = '';
-  if(!cats.length){
-    document.querySelector('#section-flashcards .flash-wrap').style.display = 'none';
-    catRow.innerHTML = '<div class="empty-state">Пока нет карточек — преподаватель ещё не добавил материалы для этого раздела.</div>';
-    return;
-  }
-  document.querySelector('#section-flashcards .flash-wrap').style.display = 'flex';
-  if(!currentCat || !cats.includes(currentCat)) currentCat = cats[0];
-  flashIndex = 0;
-  cats.forEach(cat=>{
-    const chip = document.createElement('button');
-    chip.className = 'cat-chip' + (cat===currentCat ? ' active' : '');
-    chip.textContent = cat;
-    chip.addEventListener('click', ()=>{
-      currentCat = cat; flashIndex = 0;
-      document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
-      chip.classList.add('active');
-      renderFlashcard();
-      progress.lastCategory = cat;
-      saveProgress(studentId, progress);
-    });
-    catRow.appendChild(chip);
-  });
-  renderFlashcard();
-  if(!progress.lastCategory){ progress.lastCategory = currentCat; saveProgress(studentId, progress); }
-}
-function renderFlashcard(){
-  const cards = flashcardsData[currentCat];
-  if(!cards || !cards.length) return;
-  const c = cards[flashIndex];
-  currentFlashCardId = c.id;
-  document.getElementById('flashAr').textContent = c.ar;
-  document.getElementById('flashTranslit').textContent = c.translit;
-  document.getElementById('flashRu').textContent = c.ru;
-  document.getElementById('flashProgress').textContent = (flashIndex+1)+' / '+cards.length;
-  document.getElementById('flashcard').classList.remove('flipped');
-}
-document.getElementById('flashcard').addEventListener('click', function(){
-  this.classList.toggle('flipped');
-  if(this.classList.contains('flipped') && currentFlashCardId){
-    progress.seenCards = progress.seenCards || {};
-    if(!progress.seenCards[currentFlashCardId]){
-      progress.seenCards[currentFlashCardId] = true;
-      bumpDailyGoal(1);
-      saveProgress(studentId, progress);
-    }
-  }
-});
-document.getElementById('flashPrev').addEventListener('click', e=>{
-  e.stopPropagation();
-  const cards = flashcardsData[currentCat]; if(!cards) return;
-  flashIndex = (flashIndex - 1 + cards.length) % cards.length;
-  renderFlashcard();
-});
-document.getElementById('flashNext').addEventListener('click', e=>{
-  e.stopPropagation();
-  const cards = flashcardsData[currentCat]; if(!cards) return;
-  flashIndex = (flashIndex + 1) % cards.length;
-  renderFlashcard();
-});
-
-/* ================= QUIZ ================= */
-async function initQuiz(){
-  quizzesData = await loadQuizzesData();
-  const names = Object.keys(quizzesData);
-  const catRow = document.getElementById('quizCatRow');
-  const bar = document.getElementById('quizProgressBar');
-  catRow.innerHTML = '';
-  if(!names.length){
-    bar.style.display = 'none';
-    document.getElementById('quizBody').innerHTML = '<div class="empty-state">Пока нет вопросов — преподаватель ещё не добавил квиз.</div>';
-    return;
-  }
-  names.forEach(name=>{
-    const chip = document.createElement('button');
-    chip.className = 'cat-chip' + (name===currentQuizName ? ' active' : '');
-    chip.textContent = name;
-    chip.addEventListener('click', ()=>{
-      currentQuizName = name;
-      document.querySelectorAll('#quizCatRow .cat-chip').forEach(c=>c.classList.remove('active'));
-      chip.classList.add('active');
-      startQuiz();
-    });
-    catRow.appendChild(chip);
-  });
-  if(!currentQuizName || !names.includes(currentQuizName)){
-    document.getElementById('quizBody').innerHTML = '<div class="empty-state">Выберите квиз выше, чтобы начать.</div>';
-    bar.style.display = 'none';
-    return;
-  }
-  startQuiz();
-}
-function startQuiz(){
-  quizIndex = 0; quizScore = 0; quizAnswered = false;
-  document.getElementById('quizProgressBar').style.display = 'block';
-  renderQuiz();
-}
-function renderQuiz(){
-  const quizData = quizzesData[currentQuizName] || [];
-  const body = document.getElementById('quizBody');
-  const fill = document.getElementById('quizProgressFill');
-  if(quizIndex >= quizData.length){
-    fill.style.width = '100%';
-    const pct = Math.round((quizScore/quizData.length)*100);
-    body.innerHTML = `
-      <div class="quiz-result">
-        <div class="quiz-result-score">${quizScore}/${quizData.length}</div>
-        <div class="quiz-result-label">Правильных ответов (${pct}%)</div>
-        <button class="btn-primary" style="max-width:200px; margin:22px auto 0;" id="quizRestart">Пройти ещё раз</button>
-      </div>`;
-    document.getElementById('quizRestart').addEventListener('click', startQuiz);
-    progress.quizHistory.push({date:new Date().toISOString(), score:quizScore, total:quizData.length, quizName:currentQuizName});
-    saveProgress(studentId, progress);
-    return;
-  }
-  fill.style.width = Math.round((quizIndex/quizData.length)*100)+'%';
-  const q = quizData[quizIndex];
-  quizAnswered = false;
-  body.innerHTML = `
-    <div class="quiz-question">
-      ${q.ar ? `<div class="q-arabic arabic">${q.ar}</div>` : ''}
-      <div class="q-text">${q.q}</div>
-      <div class="q-options">
-        ${q.options.map((opt,i)=>`<button class="q-option" data-i="${i}">${opt}</button>`).join('')}
-      </div>
-    </div>`;
-  document.querySelectorAll('.q-option').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      if(quizAnswered) return;
-      quizAnswered = true;
-      const i = parseInt(btn.dataset.i);
-      document.querySelectorAll('.q-option').forEach(b=>{
-        const bi = parseInt(b.dataset.i);
-        if(bi === q.correct) b.classList.add('correct');
-        else if(bi === i) b.classList.add('wrong');
-      });
-      if(i === q.correct) quizScore++;
-      setTimeout(()=>{ quizIndex++; renderQuiz(); }, 900);
-    });
-  });
-}
-
 /* ================= PROGRESS ================= */
-function renderProgress(){
+async function renderProgress(){
   const grid = document.getElementById('statGrid');
-  const totalQuizzes = progress.quizHistory.length;
-  const avgScore = totalQuizzes ? Math.round(progress.quizHistory.reduce((s,h)=>s+(h.score/h.total),0)/totalQuizzes*100) : 0;
-  const lessonsCompleted = Object.keys(progress.completedLessons || {}).length;
-  const wordsLearned = Object.keys(progress.seenCards || {}).length;
+  const all = await loadLessons();
+  const mine = all.filter(l => l.studentIds.includes(studentId) && l.homework && l.homework.trim());
+  progress.homeworkDone = progress.homeworkDone || {};
+  const doneCount = mine.filter(l => progress.homeworkDone[l.id]).length;
+  const totalCount = mine.length;
+  const pct = totalCount ? Math.round((doneCount/totalCount)*100) : 0;
   grid.innerHTML = `
-    <div class="stat-card"><div class="stat-num">${lessonsCompleted}</div><div class="stat-label">Уроков пройдено</div></div>
-    <div class="stat-card"><div class="stat-num">${wordsLearned}</div><div class="stat-label">Слов выучено</div></div>
-    <div class="stat-card"><div class="stat-num">${progress.seenLetters.length}/${MULT.length}</div><div class="stat-label">Табл. умножения</div></div>
-    <div class="stat-card"><div class="stat-num">${totalQuizzes}</div><div class="stat-label">Квизов пройдено</div></div>
-    <div class="stat-card"><div class="stat-num">${avgScore}%</div><div class="stat-label">Средний результат</div></div>
+    <div class="stat-card"><div class="stat-num">${doneCount}/${totalCount}</div><div class="stat-label">Домашних заданий выполнено</div></div>
+    <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-label">Процент выполнения</div></div>
   `;
-  const hist = document.getElementById('quizHistory');
-  if(!progress.quizHistory.length){
-    hist.innerHTML = '<div class="empty-state">Пока нет пройденных квизов — попробуйте раздел «Квиз».</div>';
-  } else {
-    hist.innerHTML = progress.quizHistory.slice().reverse().slice(0,10).map(h=>{
-      const d = new Date(h.date);
-      const dateStr = d.toLocaleDateString('ru-RU', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
-      return `<div class="history-item"><span>${h.quizName ? h.quizName+' · ' : ''}${dateStr}</span><strong>${h.score}/${h.total}</strong></div>`;
-    }).join('');
-  }
 }
 
 /* ================= SCHEDULE ================= */
@@ -1928,70 +1520,27 @@ function bumpDailyGoal(amount){
 
 /* ================= HOME DASHBOARD ================= */
 async function renderHome(){
-  const totalLetters = MULT.length;
-  const lettersCount = progress.seenLetters.length;
-  const pct = Math.round((lettersCount/totalLetters)*100);
+  const all = await loadLessons();
+  const mine = all.filter(l => l.studentIds.includes(studentId) && l.homework && l.homework.trim());
+  progress.homeworkDone = progress.homeworkDone || {};
+  const doneCount = mine.filter(l => progress.homeworkDone[l.id]).length;
+  const totalCount = mine.length;
+  const pct = totalCount ? Math.round((doneCount/totalCount)*100) : 0;
   const circumference = 238.76;
   document.getElementById('homeRingProgress').style.strokeDashoffset = circumference - (circumference*pct/100);
   document.getElementById('homeRingPct').textContent = pct+'%';
-  document.getElementById('homeStatLetters').textContent = `${lettersCount}/${totalLetters}`;
-  const totalQ = progress.quizHistory.length;
-  document.getElementById('homeStatQuizzes').textContent = totalQ;
-  const avg = totalQ ? Math.round(progress.quizHistory.reduce((s,h)=>s+(h.score/h.total),0)/totalQ*100) : 0;
-  document.getElementById('homeStatAvg').textContent = totalQ ? avg+'%' : '—';
-
-  const today = todayStr();
-  const goalCount = (progress.dailyGoal && progress.dailyGoal.date === today) ? progress.dailyGoal.count : 0;
-  const goalTarget = 10;
-  document.getElementById('homeGoalFill').style.width = Math.min(100, Math.round(goalCount/goalTarget*100))+'%';
-  document.getElementById('homeGoalCount').textContent = `${Math.min(goalCount,goalTarget)} / ${goalTarget}`;
-
-  // continue learning
-  const continueRow = document.getElementById('homeContinueRow');
-  const items = [];
-  if(progress.lastLesson){
-    items.push({
-      title: 'Урок: '+progress.lastLesson.title, sub: 'Продолжить с того же места',
-      action: ()=>{ goToTab('lessons'); setTimeout(()=>{
-        if(progress.lastLesson.id === '__alphabet'){ openLessonDetail({id:'__alphabet', title:'Таблица умножения', isAlphabet:true}); }
-      }, 50); }, label:'Продолжить'
-    });
-  }
-  if(progress.quizHistory.length){
-    const last = progress.quizHistory[progress.quizHistory.length-1];
-    items.push({
-      title: 'Квиз: '+(last.quizName||'Квиз'), sub: `Последний результат ${last.score}/${last.total}`,
-      action: ()=>{ currentQuizName = last.quizName; goToTab('quiz'); }, label:'Повторить'
-    });
-  }
-  if(!items.length){
-    continueRow.innerHTML = `<div class="empty-state" style="padding:10px 0;">Вы ещё не начинали заниматься — откройте раздел «Уроки», чтобы стартовать.</div>`;
-  } else {
-    continueRow.innerHTML = items.map((it,i)=>`
-      <div class="home-continue-item">
-        <div class="home-continue-info"><strong>${it.title}</strong><span class="home-continue-sub">${it.sub}</span></div>
-        <button class="home-go-btn" data-continue-i="${i}">${it.label}</button>
-      </div>`).join('');
-    continueRow.querySelectorAll('[data-continue-i]').forEach(btn=>{
-      btn.addEventListener('click', ()=> items[parseInt(btn.dataset.continueI)].action());
-    });
-  }
-
-  buildPracticeTiles('homePracticeTiles');
+  document.getElementById('homeStatHomework').textContent = `${doneCount}/${totalCount}`;
 }
 
 function buildPracticeTiles(containerId){
   const el = document.getElementById(containerId);
   if(!el) return;
-  const catCount = Object.keys(flashcardsData).length;
   const ICONS = {
-    dict: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6"><path d="M12 6.5c-1.8-1.4-4.4-1.8-7.5-1.5v13c3.1-.3 5.7.1 7.5 1.5 1.8-1.4 4.4-1.8 7.5-1.5v-13c-3.1-.3-5.7.1-7.5 1.5Z" stroke-linejoin="round"/><path d="M12 6.5v13" stroke-linecap="round"/></svg>',
     ear: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="12" r="2.4"/><path d="M12.5 6.5a7 7 0 0 1 0 11"/><path d="M15 8.7a4 4 0 0 1 0 6.6"/><path d="M17.5 6a9.8 9.8 0 0 1 0 12"/></svg>',
     scroll: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linejoin="round"><path d="M6 4.5h9c1.4 0 2.5 1.1 2.5 2.5v11" stroke-linecap="round"/><path d="M6 4.5A2 2 0 0 0 4 6.5v11a2 2 0 0 0 2 2h11.5c-1.4 0-2.5-1.1-2.5-2.5V7" stroke-linecap="round"/><path d="M8 9h6M8 12.5h6M8 16h3.5" stroke-linecap="round"/></svg>',
     pen: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19l1-4.2L14.8 6a1.8 1.8 0 0 1 2.5 0l.7.7a1.8 1.8 0 0 1 0 2.5L9.2 18Z"/><path d="M13 7.8l3.2 3.2"/><path d="M5 19h4.2"/></svg>'
   };
   const tiles = [
-    { icon:ICONS.dict, title:'Формулы', sub:`${catCount} тем`, tab:'flashcards' },
     { icon:ICONS.ear, title:'Устный счёт', sub:'Быстрые тренировки', tab:'listening' },
     { icon:ICONS.scroll, title:'Задачи', sub:'Текстовые задачи', tab:'reading' },
     { icon:ICONS.pen, title:'Контрольные', sub:'Подготовка к контрольным', tab:'writing' }
@@ -2010,57 +1559,13 @@ async function renderPracticeHub(){
   buildPracticeTiles('practicePageTiles');
 }
 
-/* ================= LESSONS & GRAMMAR (content) ================= */
-async function loadLessonNotes(){
-  try{
-    const snap = await db.collection('lessonNotes').get();
-    return snap.docs.map(d=>({ id:d.id, ...d.data() }));
-  }catch(e){ console.error('load lesson notes failed', e); return []; }
-}
+/* ================= THEORY (content) ================= */
 async function loadGrammarNotes(){
   try{
     const snap = await db.collection('grammarNotes').get();
     return snap.docs.map(d=>({ id:d.id, ...d.data() }));
   }catch(e){ console.error('load grammar notes failed', e); return []; }
 }
-async function renderLessonsList(){
-  const list = await loadLessonNotes();
-  const grid = document.getElementById('lessonsCardGrid');
-  document.getElementById('lessonsListView').style.display = 'block';
-  document.getElementById('lessonsDetailView').style.display = 'none';
-  const cards = [{ id:'__alphabet', title:'Таблица умножения', isAlphabet:true }].concat(list);
-  grid.innerHTML = cards.map((l,i) => `
-    <div class="lesson-card" data-lesson-i="${i}">
-      <div class="lesson-card-icon">${l.isAlphabet ? '🔢' : '📖'}</div>
-      <div class="lesson-card-num">Урок ${i+1}</div>
-      <div class="lesson-card-title">${l.title}</div>
-    </div>`).join('');
-  grid.querySelectorAll('[data-lesson-i]').forEach(card=>{
-    card.addEventListener('click', ()=>{
-      const l = cards[parseInt(card.dataset.lessonI)];
-      openLessonDetail(l);
-    });
-  });
-}
-function openLessonDetail(l){
-  document.getElementById('lessonsListView').style.display = 'none';
-  document.getElementById('lessonsDetailView').style.display = 'block';
-  if(l.isAlphabet){
-    document.getElementById('lessonDetailAlphabet').style.display = 'block';
-    document.getElementById('lessonDetailNote').style.display = 'none';
-    initAlphabet();
-  } else {
-    document.getElementById('lessonDetailAlphabet').style.display = 'none';
-    document.getElementById('lessonDetailNote').style.display = 'block';
-    document.getElementById('lessonDetailTitle').textContent = l.title;
-    document.getElementById('lessonDetailBody').textContent = l.body || '';
-  }
-  progress.lastLesson = { id: l.id, title: l.isAlphabet ? 'Таблица умножения' : l.title };
-  progress.completedLessons = progress.completedLessons || {};
-  progress.completedLessons[l.id] = true;
-  saveProgress(studentId, progress);
-}
-document.getElementById('lessonBackBtn').addEventListener('click', renderLessonsList);
 
 async function renderGrammarList(){
   const list = await loadGrammarNotes();
@@ -2108,17 +1613,7 @@ async function renderWritingList(){ renderTaskListInto('writingList', await load
 
 /* ---- ADMIN: content management ---- */
 async function renderContentAdmin(){
-  const lessons = await loadLessonNotes();
   const grammar = await loadGrammarNotes();
-  const lEl = document.getElementById('lessonNotesList');
-  lEl.innerHTML = !lessons.length ? '<div class="empty-state">Пока нет дополнительных уроков (Урок 1 — Таблица умножения есть всегда).</div>' : lessons.map(l=>`
-    <div class="mat-list-item">
-      <div class="mat-list-item-body"><div class="mat-list-sub" style="font-weight:700; color:var(--text);">${l.title}</div></div>
-      <button class="lesson-del-btn" data-del-lesson="${l.id}">Удалить</button>
-    </div>`).join('');
-  lEl.querySelectorAll('[data-del-lesson]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{ await db.collection('lessonNotes').doc(btn.dataset.delLesson).delete(); await renderContentAdmin(); });
-  });
   const gEl = document.getElementById('grammarNotesList');
   gEl.innerHTML = !grammar.length ? '<div class="empty-state">Пока нет тем.</div>' : grammar.map(g=>`
     <div class="mat-list-item">
@@ -2129,18 +1624,6 @@ async function renderContentAdmin(){
     btn.addEventListener('click', async ()=>{ await db.collection('grammarNotes').doc(btn.dataset.delGrammar).delete(); await renderContentAdmin(); });
   });
 }
-document.getElementById('addLessonNoteBtn').addEventListener('click', async ()=>{
-  const errEl = document.getElementById('lessonNoteError');
-  const title = document.getElementById('newLessonTitle').value.trim();
-  const body = document.getElementById('newLessonBody').value.trim();
-  if(!title || !body){ errEl.textContent = 'Заполните заголовок и текст.'; return; }
-  errEl.textContent = '';
-  try{ await db.collection('lessonNotes').add({ title, body }); }
-  catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
-  document.getElementById('newLessonTitle').value = '';
-  document.getElementById('newLessonBody').value = '';
-  await renderContentAdmin();
-});
 document.getElementById('addGrammarNoteBtn').addEventListener('click', async ()=>{
   const errEl = document.getElementById('grammarNoteError');
   const title = document.getElementById('newGrammarTitle').value.trim();
