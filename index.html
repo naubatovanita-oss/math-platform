@@ -180,6 +180,20 @@
   .lesson-item-info strong{ color:var(--gold-soft); font-family:'JetBrains Mono', monospace; margin-right:8px; }
   .lesson-item-students{ color:var(--text); }
   .lesson-item-note{ color:var(--muted); font-size:12px; margin-top:2px; }
+
+  /* ---------- COMPACT CALENDAR (home page) ---------- */
+  .cal-header.compact{ margin-bottom:10px; }
+  .cal-title.small{ font-size:13.5px; }
+  .cal-nav-btn.small{ width:24px; height:24px; font-size:12px; }
+  .cal-grid.compact{ gap:3px; }
+  .cal-grid.compact .cal-dow{ font-size:9px; padding:2px 0 4px; }
+  .cal-grid.compact .cal-day{ border-radius:6px; padding:3px; }
+  .cal-grid.compact .cal-day-num{ font-size:10px; }
+  .cal-grid.compact .cal-day-time{ font-size:9px; line-height:1.05; }
+  .cal-grid.compact .cal-day-count{ font-size:9px; }
+  .day-panel.compact{ margin-top:12px; padding:12px; }
+  .day-panel.compact .day-panel-title{ font-size:12.5px; margin-bottom:8px; }
+  .day-panel.compact .lesson-item{ padding:8px 10px; font-size:12px; }
   .lesson-del-btn{
     background:none; border:1px solid var(--panel-border); color:var(--rose);
     border-radius:6px; padding:4px 9px; font-size:11.5px; cursor:pointer; font-family:inherit; white-space:nowrap;
@@ -479,6 +493,57 @@
   .history-item strong{ color:var(--text); }
   .empty-state{ text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
 
+  /* ---------- TOPIC TRACKER (student view) ---------- */
+  .topic-track-card{ background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:16px 18px; margin-bottom:12px; }
+  .topic-track-title{ font-size:14.5px; font-weight:700; margin-bottom:10px; }
+  .topic-track-row{ display:flex; gap:22px; flex-wrap:wrap; }
+  .topic-track-item{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); }
+  .mock-track-card{ background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:14px 18px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+  .mock-track-name{ font-size:14px; font-weight:700; }
+  .mock-track-score{ font-size:18px; font-weight:800; }
+
+  /* ---------- STATUS DOTS (shared) ---------- */
+  .status-dot{
+    width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+    flex-shrink:0; border:2px solid var(--panel-border); background:#fff; color:#fff; font-size:13px; font-weight:800;
+  }
+  .status-dot.st-done{ background:#2E9E5B; border-color:#2E9E5B; }
+  .status-dot.st-progress{ background:#E8B93F; border-color:#E8B93F; }
+  .status-dot.st-problem{ background:#C23B3B; border-color:#C23B3B; }
+  .status-dot.st-none{ background:#fff; border-color:var(--panel-border); }
+  button.status-dot{ cursor:pointer; transition:transform 0.12s ease; }
+  button.status-dot:hover{ transform:scale(1.12); }
+
+  /* ---------- TRACKER (admin view) ---------- */
+  .tracker-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+  .tracker-scroll{ overflow-x:auto; border:1px solid var(--panel-border); border-radius:14px; }
+  .tracker-table{ border-collapse:collapse; font-size:13px; min-width:100%; }
+  .tracker-table th, .tracker-table td{ padding:10px 12px; text-align:center; border-bottom:1px solid var(--panel-border); border-right:1px solid var(--panel-border); white-space:nowrap; }
+  .tracker-table th:last-child, .tracker-table td:last-child{ border-right:none; }
+  .tracker-table thead tr:first-child th{ background:var(--forest); color:var(--cream-text); font-size:11.5px; letter-spacing:0.4px; text-transform:uppercase; }
+  .tracker-table thead tr:nth-child(2) th{ background:var(--panel-light); font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase; }
+  .tracker-table td.name-cell, .tracker-table th.name-th{ text-align:left; position:sticky; left:0; background:var(--panel); z-index:1; }
+  .tracker-table thead tr:first-child th.name-th{ background:var(--forest); }
+  .tracker-name-row{ display:flex; align-items:center; gap:10px; font-weight:700; }
+  .tracker-avatar{ width:30px; height:30px; border-radius:50%; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:12px; }
+  .tracker-mock-input{
+    width:56px; text-align:center; border:1px solid var(--panel-border); border-radius:8px; padding:5px 4px;
+    font-family:inherit; font-size:13px; background:var(--panel-light); color:var(--text);
+  }
+  .tracker-del-mock{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:11px; margin-left:4px; }
+  .tracker-del-mock:hover{ color:var(--rose); }
+
+  /* ---------- RECORDINGS ---------- */
+  .recording-card{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:18px 20px; margin-bottom:12px;
+    display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;
+  }
+  .recording-info{ flex:1; min-width:200px; }
+  .recording-title{ font-size:15px; font-weight:700; margin-bottom:4px; }
+  .recording-date{ font-size:12px; color:var(--teal); font-weight:700; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:6px; }
+  .recording-note{ font-size:13.5px; color:var(--muted); line-height:1.5; }
+
+
   @media (max-width:480px){
     .letter-grid{ grid-template-columns:repeat(auto-fill, minmax(90px,1fr)); }
     .letter-ar{ font-size:32px; }
@@ -585,6 +650,8 @@
         <button class="admin-subnav-btn" id="adminNavSchedule">Расписание</button>
         <button class="admin-subnav-btn" id="adminNavContent">Теория</button>
         <button class="admin-subnav-btn" id="adminNavTasks">Домашняя работа</button>
+        <button class="admin-subnav-btn" id="adminNavTracker">Трекер прогресса</button>
+        <button class="admin-subnav-btn" id="adminNavRecordings">Записи с уроков</button>
       </div>
 
       <div class="admin-view active" id="adminViewStudents">
@@ -710,6 +777,33 @@
           <div style="margin-top:18px;" id="writeTasksList"></div>
         </div>
       </div>
+
+      <div class="admin-view" id="adminViewTracker">
+        <div class="admin-card">
+          <div class="tracker-toolbar">
+            <div class="admin-card-title" style="margin:0;">Трекер прогресса</div>
+            <button class="btn-primary" id="addMockTestBtn" style="max-width:200px; margin:0;">+ Добавить пробник</button>
+          </div>
+          <div class="section-desc" style="margin-bottom:14px;">Нажимайте на кружки, чтобы менять статус: пусто → в процессе → выполнено → проблема. Кликните по проценту пробника, чтобы изменить его.</div>
+          <div class="tracker-scroll">
+            <table class="tracker-table" id="trackerTable"></table>
+          </div>
+          <div class="empty-state" id="trackerEmpty" style="display:none;">Пока нет учеников или тем — добавьте учеников и темы в разделе «Теория».</div>
+        </div>
+      </div>
+
+      <div class="admin-view" id="adminViewRecordings">
+        <div class="admin-card">
+          <div class="admin-card-title">Запись с урока</div>
+          <div class="field"><label>Заголовок</label><input type="text" id="newRecTitle" placeholder="Например, Урок 12: Квадратные уравнения"></div>
+          <div class="field"><label>Дата (необязательно)</label><input type="date" id="newRecDate"></div>
+          <div class="field"><label>Ссылка на запись</label><input type="text" id="newRecLink" placeholder="https://..."></div>
+          <div class="field"><label>Заметка (необязательно)</label><textarea id="newRecNote" rows="2" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Что было на уроке"></textarea></div>
+          <button class="btn-primary" id="addRecBtn" style="max-width:200px;">Добавить запись</button>
+          <div class="login-error" id="recError"></div>
+          <div style="margin-top:18px;" id="recordingsAdminList"></div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -724,18 +818,18 @@
         <button class="sidebar-tab-btn active" data-tab="home"><span class="tab-icon">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 10 L10 3.5 L17 10" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 8.5 V16.5 H15 V8.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 16.5 V12 H11.5 V16.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>Главная</button>
+        <button class="sidebar-tab-btn" data-tab="recordings"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="4" width="13" height="12.5" rx="1.6" stroke-linejoin="round"/><path d="M8.2 7.5 L12.5 10.2 L8.2 12.9 Z" stroke-linejoin="round" fill="currentColor"/></svg>
+        </span>Записи с уроков</button>
         <button class="sidebar-tab-btn" data-tab="practice"><span class="tab-icon">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.6"/><circle cx="10" cy="10" r="0.9" fill="currentColor" stroke="none"/></svg>
         </span>Домашняя работа</button>
-        <button class="sidebar-tab-btn" data-tab="grammar"><span class="tab-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="4" width="12" height="12" transform="rotate(45 10 10)" stroke-linejoin="round"/><rect x="7.3" y="7.3" width="5.4" height="5.4" transform="rotate(45 10 10)" stroke-linejoin="round"/></svg>
-        </span>Теория</button>
         <button class="sidebar-tab-btn" data-tab="progress"><span class="tab-icon">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 16.5 V11"/><path d="M9 16.5 V6"/><path d="M14 16.5 V9.5"/><path d="M3 16.5 H17"/></svg>
         </span>Прогресс</button>
-        <button class="sidebar-tab-btn" data-tab="schedule"><span class="tab-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="4.5" width="13" height="12" rx="1.5" stroke-linejoin="round"/><path d="M3.5 8 H16.5" stroke-linecap="round"/><path d="M7 3 V5.5" stroke-linecap="round"/><path d="M13 3 V5.5" stroke-linecap="round"/><path d="M10 13.2 A2.6 2.6 0 1 1 12.3 11.6" stroke-linecap="round"/></svg>
-        </span>Расписание</button>
+        <button class="sidebar-tab-btn" data-tab="grammar"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="4" width="12" height="12" transform="rotate(45 10 10)" stroke-linejoin="round"/><rect x="7.3" y="7.3" width="5.4" height="5.4" transform="rotate(45 10 10)" stroke-linejoin="round"/></svg>
+        </span>Теория</button>
       </nav>
       <div class="sidebar-footer">π ≈ 3.14159265…<br>Числа — язык, который понимают все</div>
     </aside>
@@ -788,7 +882,7 @@
           </div>
         </div>
 
-        <div class="home-grid" style="grid-template-columns:1fr;">
+        <div class="home-grid" style="grid-template-columns:1.15fr 1fr;">
           <div class="home-card home-card-dark">
             <div class="home-card-title">Твой прогресс</div>
             <div class="home-stat-row">
@@ -802,6 +896,19 @@
               <div class="home-stat-list">
                 <div>Домашних заданий выполнено <strong id="homeStatHomework">0/0</strong></div>
               </div>
+            </div>
+          </div>
+          <div class="home-card">
+            <div class="home-card-title">Расписание занятий</div>
+            <div class="cal-header compact">
+              <button class="cal-nav-btn small" id="stuCalPrev">‹</button>
+              <div class="cal-title small" id="stuCalTitle"></div>
+              <button class="cal-nav-btn small" id="stuCalNext">›</button>
+            </div>
+            <div class="cal-grid compact" id="stuCalGrid"></div>
+            <div class="day-panel compact" id="stuDayPanel" style="display:none;">
+              <div class="day-panel-title" id="stuDayPanelTitle"></div>
+              <div id="stuDayPanelList"></div>
             </div>
           </div>
         </div>
@@ -830,6 +937,13 @@
         </div>
       </section>
 
+      <!-- RECORDINGS -->
+      <section class="section" id="section-recordings">
+        <div class="section-title">Записи с уроков</div>
+        <div class="section-desc">Видеозаписи ваших занятий от преподавателя.</div>
+        <div id="recordingsList"></div>
+      </section>
+
       <!-- LISTENING -->
       <section class="section" id="section-listening">
         <div class="section-title">Устный счёт</div>
@@ -854,25 +968,12 @@
       <!-- PROGRESS -->
       <section class="section" id="section-progress">
         <div class="section-title">Ваш прогресс</div>
-        <div class="section-desc">Статистика по выполнению домашних заданий.</div>
-        <div class="stat-grid" id="statGrid"></div>
+        <div class="section-desc">Статус по темам, домашним заданиям и пробникам.</div>
+        <div id="topicTrackList"></div>
+        <div style="font-size:15px; font-weight:700; margin:20px 0 10px;">Пробники</div>
+        <div id="mockTrackList"></div>
       </section>
 
-      <!-- SCHEDULE (student, read-only) -->
-      <section class="section" id="section-schedule">
-        <div class="section-title">Расписание занятий</div>
-        <div class="section-desc">Здесь отмечены ваши занятия. Изменить расписание может только преподаватель.</div>
-        <div class="cal-header">
-          <button class="cal-nav-btn" id="stuCalPrev">‹</button>
-          <div class="cal-title" id="stuCalTitle"></div>
-          <button class="cal-nav-btn" id="stuCalNext">›</button>
-        </div>
-        <div class="cal-grid" id="stuCalGrid"></div>
-        <div class="day-panel" id="stuDayPanel" style="display:none;">
-          <div class="day-panel-title" id="stuDayPanelTitle"></div>
-          <div id="stuDayPanelList"></div>
-        </div>
-      </section>
     </main>
     </div>
   </div>
@@ -903,11 +1004,11 @@ let studentName = null;
 async function loadProgress(id){
   try{
     const doc = await db.collection('progress').doc(id).get();
-    const base = { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{} };
+    const base = { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{}, topicStatus:{}, mockScores:{} };
     return doc.exists ? Object.assign(base, doc.data()) : base;
   }catch(e){
     console.error('load progress failed', e);
-    return { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{} };
+    return { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{}, topicStatus:{}, mockScores:{} };
   }
 }
 async function saveProgress(id, data){
@@ -999,7 +1100,7 @@ document.getElementById('adminLogoutBtn').addEventListener('click', ()=>{
 });
 
 document.getElementById('adminNavStudents').addEventListener('click', ()=>{
-  ['Students','Schedule','Content','Tasks'].forEach(k=>{
+  ['Students','Schedule','Content','Tasks','Tracker','Recordings'].forEach(k=>{
     document.getElementById('adminNav'+k).classList.remove('active');
     document.getElementById('adminView'+k).classList.remove('active');
   });
@@ -1007,7 +1108,7 @@ document.getElementById('adminNavStudents').addEventListener('click', ()=>{
   document.getElementById('adminViewStudents').classList.add('active');
 });
 document.getElementById('adminNavSchedule').addEventListener('click', async ()=>{
-  ['Students','Schedule','Content','Tasks'].forEach(k=>{
+  ['Students','Schedule','Content','Tasks','Tracker','Recordings'].forEach(k=>{
     document.getElementById('adminNav'+k).classList.remove('active');
     document.getElementById('adminView'+k).classList.remove('active');
   });
@@ -1016,7 +1117,7 @@ document.getElementById('adminNavSchedule').addEventListener('click', async ()=>
   await initAdminSchedule();
 });
 document.getElementById('adminNavContent').addEventListener('click', async ()=>{
-  ['Students','Schedule','Content','Tasks'].forEach(k=>{
+  ['Students','Schedule','Content','Tasks','Tracker','Recordings'].forEach(k=>{
     document.getElementById('adminNav'+k).classList.remove('active');
     document.getElementById('adminView'+k).classList.remove('active');
   });
@@ -1025,13 +1126,31 @@ document.getElementById('adminNavContent').addEventListener('click', async ()=>{
   await renderContentAdmin();
 });
 document.getElementById('adminNavTasks').addEventListener('click', async ()=>{
-  ['Students','Schedule','Content','Tasks'].forEach(k=>{
+  ['Students','Schedule','Content','Tasks','Tracker','Recordings'].forEach(k=>{
     document.getElementById('adminNav'+k).classList.remove('active');
     document.getElementById('adminView'+k).classList.remove('active');
   });
   document.getElementById('adminNavTasks').classList.add('active');
   document.getElementById('adminViewTasks').classList.add('active');
   await renderTasksAdmin();
+});
+document.getElementById('adminNavTracker').addEventListener('click', async ()=>{
+  ['Students','Schedule','Content','Tasks','Tracker','Recordings'].forEach(k=>{
+    document.getElementById('adminNav'+k).classList.remove('active');
+    document.getElementById('adminView'+k).classList.remove('active');
+  });
+  document.getElementById('adminNavTracker').classList.add('active');
+  document.getElementById('adminViewTracker').classList.add('active');
+  await renderTrackerAdmin();
+});
+document.getElementById('adminNavRecordings').addEventListener('click', async ()=>{
+  ['Students','Schedule','Content','Tasks','Tracker','Recordings'].forEach(k=>{
+    document.getElementById('adminNav'+k).classList.remove('active');
+    document.getElementById('adminView'+k).classList.remove('active');
+  });
+  document.getElementById('adminNavRecordings').classList.add('active');
+  document.getElementById('adminViewRecordings').classList.add('active');
+  await renderRecordingsAdmin();
 });
 
 
@@ -1103,10 +1222,10 @@ function activateTab(tabName){
   if(btn) btn.classList.add('active');
   document.getElementById('section-'+tabName).classList.add('active');
   if(tabName === 'progress') renderProgress();
-  if(tabName === 'schedule') initStudentSchedule();
   if(tabName === 'home') renderHome();
   if(tabName === 'practice') renderPracticeHub();
   if(tabName === 'grammar') renderGrammarList();
+  if(tabName === 'recordings') renderRecordingsList();
   if(tabName === 'listening') renderListeningList();
   if(tabName === 'reading') renderReadingList();
   if(tabName === 'writing') renderWritingList();
@@ -1116,19 +1235,218 @@ document.querySelectorAll('.sidebar-tab-btn').forEach(btn=>{
 });
 
 /* ================= PROGRESS ================= */
-async function renderProgress(){
-  const grid = document.getElementById('statGrid');
-  const all = await loadLessons();
-  const mine = all.filter(l => l.studentIds.includes(studentId) && l.homework && l.homework.trim());
-  progress.homeworkDone = progress.homeworkDone || {};
-  const doneCount = mine.filter(l => progress.homeworkDone[l.id]).length;
-  const totalCount = mine.length;
-  const pct = totalCount ? Math.round((doneCount/totalCount)*100) : 0;
-  grid.innerHTML = `
-    <div class="stat-card"><div class="stat-num">${doneCount}/${totalCount}</div><div class="stat-label">Домашних заданий выполнено</div></div>
-    <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-label">Процент выполнения</div></div>
-  `;
+/* ================= STATUS DOTS (shared) ================= */
+const STATUS_ORDER = ['none','progress','done','problem'];
+const STATUS_ICON = { none:'', progress:'', done:'✓', problem:'✕' };
+function statusDotHTML(state, clickable, extraAttrs){
+  const s = state || 'none';
+  const cls = 'status-dot st-' + s;
+  const icon = STATUS_ICON[s];
+  return clickable ? `<button class="${cls}" ${extraAttrs||''}>${icon}</button>` : `<span class="${cls}">${icon}</span>`;
 }
+function nextStatus(state){
+  const i = STATUS_ORDER.indexOf(state || 'none');
+  return STATUS_ORDER[(i+1) % STATUS_ORDER.length];
+}
+const TRACKER_AVATAR_COLORS = ['#8B7FD6','#E0698F','#3FA88C','#E0973F','#5A8FD6'];
+function initials(name){
+  const parts = (name||'').trim().split(/\s+/);
+  return ((parts[0]||'')[0]||'') + ((parts[1]||'')[0]||'');
+}
+
+/* ================= MOCK TESTS (пробники) ================= */
+async function loadMockTests(){
+  try{
+    const snap = await db.collection('mockTests').get();
+    return snap.docs.map(d=>({ id:d.id, ...d.data() })).sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
+  }catch(e){ console.error('load mock tests failed', e); return []; }
+}
+async function addMockTest(title){
+  try{ await db.collection('mockTests').add({ title, createdAt: Date.now() }); }
+  catch(e){ console.error('add mock test failed', e); }
+}
+async function deleteMockTest(id){
+  try{ await db.collection('mockTests').doc(id).delete(); }
+  catch(e){ console.error('delete mock test failed', e); }
+}
+
+/* ================= PROGRESS (student) ================= */
+async function renderProgress(){
+  const topics = await loadGrammarNotes();
+  const container = document.getElementById('topicTrackList');
+  progress.topicStatus = progress.topicStatus || {};
+  if(!topics.length){
+    container.innerHTML = '<div class="empty-state">Темы пока не добавлены.</div>';
+  } else {
+    container.innerHTML = topics.map(t=>{
+      const st = progress.topicStatus[t.id] || {};
+      return `<div class="topic-track-card">
+        <div class="topic-track-title">${t.title}</div>
+        <div class="topic-track-row">
+          <div class="topic-track-item">${statusDotHTML(st.urok)} Урок</div>
+          <div class="topic-track-item">${statusDotHTML(st.hw)} Домашка</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  const mockTests = await loadMockTests();
+  const mockEl = document.getElementById('mockTrackList');
+  progress.mockScores = progress.mockScores || {};
+  if(!mockTests.length){
+    mockEl.innerHTML = '<div class="empty-state">Пробников пока нет.</div>';
+  } else {
+    mockEl.innerHTML = mockTests.map(m=>{
+      const score = progress.mockScores[m.id];
+      const scoreColor = score==null ? 'var(--muted)' : (score>=70 ? '#2E9E5B' : score>=50 ? '#E8B93F' : '#C23B3B');
+      return `<div class="mock-track-card">
+        <div class="mock-track-name">${m.title}</div>
+        <div class="mock-track-score" style="color:${scoreColor};">${score==null ? '—' : score+'%'}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+/* ================= TRACKER (admin) ================= */
+async function renderTrackerAdmin(){
+  roster = await loadRoster();
+  const topics = await loadGrammarNotes();
+  const mockTests = await loadMockTests();
+  const table = document.getElementById('trackerTable');
+  const emptyEl = document.getElementById('trackerEmpty');
+  if(!roster.length || (!topics.length && !mockTests.length)){
+    table.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  const progresses = {};
+  await Promise.all(roster.map(async s=>{ progresses[s.id] = await loadProgress(s.id); }));
+
+  let headRow1 = '<th class="name-th" rowspan="2">ФИО</th>';
+  topics.forEach(t=> headRow1 += `<th colspan="2">${t.title}</th>`);
+  if(mockTests.length) headRow1 += `<th colspan="${mockTests.length}">Пробники</th>`;
+
+  let headRow2 = '';
+  topics.forEach(()=> headRow2 += '<th>Урок</th><th>Домашка</th>');
+  mockTests.forEach(m=> headRow2 += `<th>${m.title} <button class="tracker-del-mock" data-del-mock="${m.id}" title="Удалить пробник">✕</button></th>`);
+
+  const bodyRows = roster.map((s,i)=>{
+    const p = progresses[s.id];
+    p.topicStatus = p.topicStatus || {};
+    p.mockScores = p.mockScores || {};
+    const color = TRACKER_AVATAR_COLORS[i % TRACKER_AVATAR_COLORS.length];
+    let row = `<td class="name-cell"><div class="tracker-name-row"><span class="tracker-avatar" style="background:${color};">${initials(s.name)}</span>${s.name}</div></td>`;
+    topics.forEach(t=>{
+      const st = p.topicStatus[t.id] || {};
+      row += `<td>${statusDotHTML(st.urok, true, `data-student="${s.id}" data-topic="${t.id}" data-field="urok"`)}</td>`;
+      row += `<td>${statusDotHTML(st.hw, true, `data-student="${s.id}" data-topic="${t.id}" data-field="hw"`)}</td>`;
+    });
+    mockTests.forEach(m=>{
+      const score = p.mockScores[m.id];
+      row += `<td><input type="text" class="tracker-mock-input" data-student="${s.id}" data-mock="${m.id}" value="${score==null ? '' : score}" placeholder="—"></td>`;
+    });
+    return `<tr>${row}</tr>`;
+  }).join('');
+
+  table.innerHTML = `<thead><tr>${headRow1}</tr><tr>${headRow2}</tr></thead><tbody>${bodyRows}</tbody>`;
+
+  table.querySelectorAll('button.status-dot[data-student]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const sid = btn.dataset.student, tid = btn.dataset.topic, field = btn.dataset.field;
+      const p = progresses[sid];
+      p.topicStatus[tid] = p.topicStatus[tid] || {};
+      const next = nextStatus(p.topicStatus[tid][field]);
+      p.topicStatus[tid][field] = next;
+      btn.className = 'status-dot st-' + next;
+      btn.textContent = STATUS_ICON[next];
+      await saveProgress(sid, p);
+    });
+  });
+
+  table.querySelectorAll('.tracker-mock-input').forEach(inp=>{
+    inp.addEventListener('change', async ()=>{
+      const sid = inp.dataset.student, mid = inp.dataset.mock;
+      const raw = inp.value.trim();
+      const p = progresses[sid];
+      p.mockScores = p.mockScores || {};
+      if(raw === ''){ delete p.mockScores[mid]; }
+      else {
+        const num = Math.max(0, Math.min(100, parseInt(raw,10)||0));
+        p.mockScores[mid] = num;
+        inp.value = num;
+      }
+      await saveProgress(sid, p);
+    });
+  });
+
+  table.querySelectorAll('[data-del-mock]').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      if(!confirm('Удалить этот пробник у всех учеников?')) return;
+      await deleteMockTest(btn.dataset.delMock);
+      await renderTrackerAdmin();
+    });
+  });
+}
+document.getElementById('addMockTestBtn').addEventListener('click', async ()=>{
+  const title = prompt('Название пробника (например, «Пробник 3»):');
+  if(!title || !title.trim()) return;
+  await addMockTest(title.trim());
+  await renderTrackerAdmin();
+});
+
+/* ================= RECORDINGS (записи с уроков) ================= */
+async function loadRecordings(){
+  try{
+    const snap = await db.collection('recordings').get();
+    return snap.docs.map(d=>({ id:d.id, ...d.data() })).sort((a,b)=> (b.date||'').localeCompare(a.date||'') || (b.createdAt||0)-(a.createdAt||0));
+  }catch(e){ console.error('load recordings failed', e); return []; }
+}
+async function renderRecordingsList(){
+  const list = await loadRecordings();
+  const el = document.getElementById('recordingsList');
+  if(!list.length){ el.innerHTML = '<div class="empty-state">Записей пока нет.</div>'; return; }
+  el.innerHTML = list.map(r=>{
+    const dateLabel = r.date ? new Date(r.date+'T00:00:00').toLocaleDateString('ru-RU', {day:'numeric', month:'long'}) : '';
+    return `<div class="recording-card">
+      <div class="recording-info">
+        ${dateLabel ? `<div class="recording-date">${dateLabel}</div>` : ''}
+        <div class="recording-title">${r.title}</div>
+        ${r.note ? `<div class="recording-note">${(r.note||'').replace(/</g,'&lt;')}</div>` : ''}
+      </div>
+      ${r.link ? `<a class="task-link-btn" href="${r.link}" target="_blank" rel="noopener">Смотреть запись ↗</a>` : ''}
+    </div>`;
+  }).join('');
+}
+async function renderRecordingsAdmin(){
+  const list = await loadRecordings();
+  const el = document.getElementById('recordingsAdminList');
+  el.innerHTML = !list.length ? '<div class="empty-state">Пока нет записей.</div>' : list.map(r=>`
+    <div class="mat-list-item">
+      <div class="mat-list-item-body"><div class="mat-list-sub" style="font-weight:700; color:var(--text);">${r.title}${r.date ? ' · '+r.date : ''}</div></div>
+      <button class="lesson-del-btn" data-del-rec="${r.id}">Удалить</button>
+    </div>`).join('');
+  el.querySelectorAll('[data-del-rec]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{ await db.collection('recordings').doc(btn.dataset.delRec).delete(); await renderRecordingsAdmin(); });
+  });
+}
+document.getElementById('addRecBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('recError');
+  const title = document.getElementById('newRecTitle').value.trim();
+  const date = document.getElementById('newRecDate').value;
+  const link = document.getElementById('newRecLink').value.trim();
+  const note = document.getElementById('newRecNote').value.trim();
+  if(!title || !link){ errEl.textContent = 'Заполните заголовок и ссылку.'; return; }
+  errEl.textContent = '';
+  try{ await db.collection('recordings').add({ title, date, link, note, createdAt: Date.now() }); }
+  catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
+  document.getElementById('newRecTitle').value = '';
+  document.getElementById('newRecDate').value = '';
+  document.getElementById('newRecLink').value = '';
+  document.getElementById('newRecNote').value = '';
+  await renderRecordingsAdmin();
+});
 
 /* ================= SCHEDULE ================= */
 const DOW_LABELS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
@@ -1389,122 +1707,6 @@ async function renderHomeworkBanner(){
   banner.classList.add('show');
 }
 
-/* ================= MATERIALS MANAGEMENT (admin) ================= */
-async function renderMaterialsAdmin(){
-  const cardsMap = await loadFlashcardsData();
-  const quizzesMap = await loadQuizzesData();
-
-  // populate category / quiz name datalists
-  document.getElementById('catList').innerHTML = Object.keys(cardsMap).map(c=>`<option value="${c}">`).join('');
-  document.getElementById('quizNameList').innerHTML = Object.keys(quizzesMap).map(n=>`<option value="${n}">`).join('');
-
-  const cardsListEl = document.getElementById('cardsList');
-  const allCards = Object.entries(cardsMap).flatMap(([cat, arr]) => arr.map(c => ({...c, category:cat})));
-  if(!allCards.length){
-    cardsListEl.innerHTML = '<div class="empty-state">Пока нет карточек.</div>';
-  } else {
-    cardsListEl.innerHTML = allCards.map(c => `
-      <div class="mat-list-item">
-        <div class="mat-list-item-body">
-          <div class="mat-list-cat">${c.category}</div>
-          <div class="mat-list-main"><span class="mat-list-ar arabic">${c.ar}</span><span class="mat-list-sub">${c.translit} — ${c.ru}</span></div>
-        </div>
-        <button class="lesson-del-btn" data-del-card="${c.id}">Удалить</button>
-      </div>`).join('');
-    cardsListEl.querySelectorAll('[data-del-card]').forEach(btn=>{
-      btn.addEventListener('click', async ()=>{
-        await db.collection('flashcards').doc(btn.dataset.delCard).delete();
-        await renderMaterialsAdmin();
-      });
-    });
-  }
-
-  const quizListEl = document.getElementById('quizList');
-  const quizNames = Object.keys(quizzesMap);
-  if(!quizNames.length){
-    quizListEl.innerHTML = '<div class="empty-state">Пока нет вопросов.</div>';
-  } else {
-    quizListEl.innerHTML = quizNames.map(name => `
-      <div style="margin-bottom:16px;">
-        <div class="mat-list-cat" style="margin-bottom:6px;">${name} (${quizzesMap[name].length})</div>
-        ${quizzesMap[name].map(q => `
-          <div class="mat-list-item">
-            <div class="mat-list-item-body">
-              <div class="mat-list-main">${q.ar ? `<span class="mat-list-ar arabic">${q.ar}</span>` : ''}<span class="mat-list-sub">${q.q}</span></div>
-              <div class="mat-q-options">${q.options.map((o,i)=> i===q.correct ? `<span class="mat-q-correct">${o} ✓</span>` : o).join(' · ')}</div>
-            </div>
-            <button class="lesson-del-btn" data-del-q="${q.id}">Удалить</button>
-          </div>`).join('')}
-      </div>`).join('');
-    quizListEl.querySelectorAll('[data-del-q]').forEach(btn=>{
-      btn.addEventListener('click', async ()=>{
-        await db.collection('quizQuestions').doc(btn.dataset.delQ).delete();
-        await renderMaterialsAdmin();
-      });
-    });
-  }
-}
-
-document.getElementById('addCardBtn').addEventListener('click', async ()=>{
-  const errEl = document.getElementById('cardError');
-  const category = document.getElementById('newCardCat').value.trim();
-  const ar = document.getElementById('newCardAr').value.trim();
-  const translit = document.getElementById('newCardTranslit').value.trim();
-  const ru = document.getElementById('newCardRu').value.trim();
-  if(!category || !ar || !ru){ errEl.textContent = 'Заполните категорию, слово и перевод.'; return; }
-  errEl.textContent = '';
-  try{
-    await db.collection('flashcards').add({ category, ar, translit, ru });
-  }catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
-  document.getElementById('newCardAr').value = '';
-  document.getElementById('newCardTranslit').value = '';
-  document.getElementById('newCardRu').value = '';
-  await renderMaterialsAdmin();
-});
-
-document.getElementById('addQBtn').addEventListener('click', async ()=>{
-  const errEl = document.getElementById('qError');
-  const quizName = document.getElementById('newQQuizName').value.trim();
-  const ar = document.getElementById('newQAr').value.trim();
-  const q = document.getElementById('newQText').value.trim();
-  const options = [
-    document.getElementById('newQOpt0').value.trim(),
-    document.getElementById('newQOpt1').value.trim(),
-    document.getElementById('newQOpt2').value.trim()
-  ];
-  const correct = parseInt(document.querySelector('input[name="newQCorrect"]:checked').value);
-  if(!quizName || !q || options.some(o=>!o)){ errEl.textContent = 'Заполните название квиза, вопрос и все три варианта.'; return; }
-  errEl.textContent = '';
-  try{
-    await db.collection('quizQuestions').add({ quizName, ar, q, options, correct });
-  }catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
-  document.getElementById('newQAr').value = '';
-  document.getElementById('newQText').value = '';
-  document.getElementById('newQOpt0').value = '';
-  document.getElementById('newQOpt1').value = '';
-  document.getElementById('newQOpt2').value = '';
-  document.querySelector('input[name="newQCorrect"][value="0"]').checked = true;
-  await renderMaterialsAdmin();
-});
-
-document.getElementById('seedFlashcardsBtn').addEventListener('click', async ()=>{
-  if(!confirm('Добавить демо-карточки (Алгебра, Геометрия, Дроби, Проценты) в базу?')) return;
-  const writes = [];
-  Object.entries(SEED_FLASHCARDS).forEach(([category, arr])=>{
-    arr.forEach(([ar,translit,ru])=>{
-      writes.push(db.collection('flashcards').add({ category, ar, translit, ru }));
-    });
-  });
-  await Promise.all(writes);
-  await renderMaterialsAdmin();
-});
-document.getElementById('seedQuizBtn').addEventListener('click', async ()=>{
-  if(!confirm('Добавить демо-квиз «Основы математики» в базу?')) return;
-  const writes = SEED_QUIZ.map(q => db.collection('quizQuestions').add({ ...q, quizName: 'Основы математики' }));
-  await Promise.all(writes);
-  await renderMaterialsAdmin();
-});
-
 /* ================= NAVIGATION HELPER ================= */
 function goToTab(name){
   activateTab(name);
@@ -1530,6 +1732,7 @@ async function renderHome(){
   document.getElementById('homeRingProgress').style.strokeDashoffset = circumference - (circumference*pct/100);
   document.getElementById('homeRingPct').textContent = pct+'%';
   document.getElementById('homeStatHomework').textContent = `${doneCount}/${totalCount}`;
+  await initStudentSchedule();
 }
 
 function buildPracticeTiles(containerId){
