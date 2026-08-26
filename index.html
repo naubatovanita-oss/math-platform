@@ -493,45 +493,36 @@
   .history-item strong{ color:var(--text); }
   .empty-state{ text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
 
-  /* ---------- TOPIC TRACKER (student view) ---------- */
-  .topic-track-card{ background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:16px 18px; margin-bottom:12px; }
-  .topic-track-title{ font-size:14.5px; font-weight:700; margin-bottom:10px; }
-  .topic-track-row{ display:flex; gap:22px; flex-wrap:wrap; }
-  .topic-track-item{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); }
-  .mock-track-card{ background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:14px 18px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
-  .mock-track-name{ font-size:14px; font-weight:700; }
-  .mock-track-score{ font-size:18px; font-weight:800; }
-
   /* ---------- STATUS DOTS (shared) ---------- */
   .status-dot{
-    width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
-    flex-shrink:0; border:2px solid var(--panel-border); background:#fff; color:#fff; font-size:13px; font-weight:800;
+    width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+    flex-shrink:0; border:2px solid var(--panel-border); background:#fff; color:#fff; font-size:14px; font-weight:800;
   }
   .status-dot.st-done{ background:#2E9E5B; border-color:#2E9E5B; }
-  .status-dot.st-progress{ background:#E8B93F; border-color:#E8B93F; }
   .status-dot.st-problem{ background:#C23B3B; border-color:#C23B3B; }
   .status-dot.st-none{ background:#fff; border-color:var(--panel-border); }
   button.status-dot{ cursor:pointer; transition:transform 0.12s ease; }
   button.status-dot:hover{ transform:scale(1.12); }
 
-  /* ---------- TRACKER (admin view) ---------- */
+  /* ---------- TRACKER (per-student lesson log) ---------- */
   .tracker-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
   .tracker-scroll{ overflow-x:auto; border:1px solid var(--panel-border); border-radius:14px; }
-  .tracker-table{ border-collapse:collapse; font-size:13px; min-width:100%; }
-  .tracker-table th, .tracker-table td{ padding:10px 12px; text-align:center; border-bottom:1px solid var(--panel-border); border-right:1px solid var(--panel-border); white-space:nowrap; }
+  .tracker-table{ border-collapse:collapse; font-size:13.5px; min-width:100%; }
+  .tracker-table th, .tracker-table td{ padding:12px 14px; text-align:center; border-bottom:1px solid var(--panel-border); border-right:1px solid var(--panel-border); white-space:nowrap; }
   .tracker-table th:last-child, .tracker-table td:last-child{ border-right:none; }
-  .tracker-table thead tr:first-child th{ background:var(--forest); color:var(--cream-text); font-size:11.5px; letter-spacing:0.4px; text-transform:uppercase; }
-  .tracker-table thead tr:nth-child(2) th{ background:var(--panel-light); font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase; }
-  .tracker-table td.name-cell, .tracker-table th.name-th{ text-align:left; position:sticky; left:0; background:var(--panel); z-index:1; }
-  .tracker-table thead tr:first-child th.name-th{ background:var(--forest); }
-  .tracker-name-row{ display:flex; align-items:center; gap:10px; font-weight:700; }
-  .tracker-avatar{ width:30px; height:30px; border-radius:50%; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:12px; }
-  .tracker-mock-input{
-    width:56px; text-align:center; border:1px solid var(--panel-border); border-radius:8px; padding:5px 4px;
+  .tracker-table tbody tr:last-child td{ border-bottom:none; }
+  .tracker-table thead th{ background:var(--forest); color:var(--cream-text); font-size:11.5px; letter-spacing:0.4px; text-transform:uppercase; font-weight:700; }
+  .tracker-table td:first-child{ text-align:left; font-weight:700; }
+  .tracker-date-input{
+    border:1px solid var(--panel-border); border-radius:8px; padding:6px 8px;
     font-family:inherit; font-size:13px; background:var(--panel-light); color:var(--text);
   }
-  .tracker-del-mock{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:11px; margin-left:4px; }
-  .tracker-del-mock:hover{ color:var(--rose); }
+  .tracker-del-entry{ background:none; border:none; color:var(--muted); cursor:pointer; font-size:12px; font-weight:700; }
+  .tracker-del-entry:hover{ color:var(--rose); }
+  .tracker-student-select{
+    width:100%; max-width:320px; border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px;
+    background:var(--panel-light); color:var(--text); font-size:14px; font-family:inherit;
+  }
 
   /* ---------- RECORDINGS ---------- */
   .recording-card{
@@ -782,13 +773,17 @@
         <div class="admin-card">
           <div class="tracker-toolbar">
             <div class="admin-card-title" style="margin:0;">Трекер прогресса</div>
-            <button class="btn-primary" id="addMockTestBtn" style="max-width:200px; margin:0;">+ Добавить пробник</button>
+            <button class="btn-primary" id="addLessonEntryBtn" style="max-width:220px; margin:0;">+ Добавить занятие</button>
           </div>
-          <div class="section-desc" style="margin-bottom:14px;">Нажимайте на кружки, чтобы менять статус: пусто → в процессе → выполнено → проблема. Кликните по проценту пробника, чтобы изменить его.</div>
+          <div class="section-desc">Выберите ученика — у каждого свой индивидуальный трекер. Нажимайте на кружки, чтобы отметить статус.</div>
+          <div class="field" style="max-width:320px; margin-bottom:16px;">
+            <label>Ученик</label>
+            <select id="trackerStudentSelect" class="tracker-student-select"></select>
+          </div>
           <div class="tracker-scroll">
             <table class="tracker-table" id="trackerTable"></table>
           </div>
-          <div class="empty-state" id="trackerEmpty" style="display:none;">Пока нет учеников или тем — добавьте учеников и темы в разделе «Теория».</div>
+          <div class="empty-state" id="trackerEmpty" style="display:none;"></div>
         </div>
       </div>
 
@@ -968,10 +963,8 @@
       <!-- PROGRESS -->
       <section class="section" id="section-progress">
         <div class="section-title">Ваш прогресс</div>
-        <div class="section-desc">Статус по темам, домашним заданиям и пробникам.</div>
-        <div id="topicTrackList"></div>
-        <div style="font-size:15px; font-weight:700; margin:20px 0 10px;">Пробники</div>
-        <div id="mockTrackList"></div>
+        <div class="section-desc">История занятий: проведён ли урок, сделана ли домашка, оплачено ли занятие.</div>
+        <div id="trackerStudentView"></div>
       </section>
 
     </main>
@@ -1004,11 +997,11 @@ let studentName = null;
 async function loadProgress(id){
   try{
     const doc = await db.collection('progress').doc(id).get();
-    const base = { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{}, topicStatus:{}, mockScores:{} };
+    const base = { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{} };
     return doc.exists ? Object.assign(base, doc.data()) : base;
   }catch(e){
     console.error('load progress failed', e);
-    return { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{}, topicStatus:{}, mockScores:{} };
+    return { seenLetters:[], quizHistory:[], homeworkDone:{}, dailyGoal:{date:'',count:0}, lastCategory:null, seenCards:{}, lastLesson:null, completedLessons:{} };
   }
 }
 async function saveProgress(id, data){
@@ -1234,166 +1227,135 @@ document.querySelectorAll('.sidebar-tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=> activateTab(btn.dataset.tab));
 });
 
-/* ================= PROGRESS ================= */
-/* ================= STATUS DOTS (shared) ================= */
-const STATUS_ORDER = ['none','progress','done','problem'];
-const STATUS_ICON = { none:'', progress:'', done:'✓', problem:'✕' };
-function statusDotHTML(state, clickable, extraAttrs){
-  const s = state || 'none';
-  const cls = 'status-dot st-' + s;
-  const icon = STATUS_ICON[s];
+/* ================= STATUS DOTS (shared, boolean) ================= */
+function boolDotHTML(val, clickable, extraAttrs, falseVariant){
+  const state = val ? 'done' : (falseVariant === 'problem' ? 'problem' : 'none');
+  const icon = val ? '✓' : (falseVariant === 'problem' ? '✕' : '');
+  const cls = 'status-dot st-' + state;
   return clickable ? `<button class="${cls}" ${extraAttrs||''}>${icon}</button>` : `<span class="${cls}">${icon}</span>`;
 }
-function nextStatus(state){
-  const i = STATUS_ORDER.indexOf(state || 'none');
-  return STATUS_ORDER[(i+1) % STATUS_ORDER.length];
-}
-const TRACKER_AVATAR_COLORS = ['#8B7FD6','#E0698F','#3FA88C','#E0973F','#5A8FD6'];
-function initials(name){
-  const parts = (name||'').trim().split(/\s+/);
-  return ((parts[0]||'')[0]||'') + ((parts[1]||'')[0]||'');
-}
 
-/* ================= MOCK TESTS (пробники) ================= */
-async function loadMockTests(){
+/* ================= LESSON TRACKER (individual per student) ================= */
+async function loadLessonEntries(sid){
   try{
-    const snap = await db.collection('mockTests').get();
-    return snap.docs.map(d=>({ id:d.id, ...d.data() })).sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
-  }catch(e){ console.error('load mock tests failed', e); return []; }
+    const snap = await db.collection('lessonEntries').where('studentId','==',sid).get();
+    return snap.docs.map(d=>({ id:d.id, ...d.data() }))
+      .sort((a,b)=> (a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
+  }catch(e){ console.error('load lesson entries failed', e); return []; }
 }
-async function addMockTest(title){
-  try{ await db.collection('mockTests').add({ title, createdAt: Date.now() }); }
-  catch(e){ console.error('add mock test failed', e); }
+async function addLessonEntry(sid, date){
+  try{ await db.collection('lessonEntries').add({ studentId: sid, date, urok:false, homework:false, paid:false, createdAt: Date.now() }); }
+  catch(e){ console.error('add lesson entry failed', e); }
 }
-async function deleteMockTest(id){
-  try{ await db.collection('mockTests').doc(id).delete(); }
-  catch(e){ console.error('delete mock test failed', e); }
+async function updateLessonEntry(id, patch){
+  try{ await db.collection('lessonEntries').doc(id).update(patch); }
+  catch(e){ console.error('update lesson entry failed', e); }
+}
+async function deleteLessonEntry(id){
+  try{ await db.collection('lessonEntries').doc(id).delete(); }
+  catch(e){ console.error('delete lesson entry failed', e); }
+}
+function trackerDateLabel(dateStr){
+  if(!dateStr) return '—';
+  return new Date(dateStr+'T00:00:00').toLocaleDateString('ru-RU', {day:'numeric', month:'long'});
 }
 
-/* ================= PROGRESS (student) ================= */
+/* ================= PROGRESS (student, read-only tracker) ================= */
 async function renderProgress(){
-  const topics = await loadGrammarNotes();
-  const container = document.getElementById('topicTrackList');
-  progress.topicStatus = progress.topicStatus || {};
-  if(!topics.length){
-    container.innerHTML = '<div class="empty-state">Темы пока не добавлены.</div>';
-  } else {
-    container.innerHTML = topics.map(t=>{
-      const st = progress.topicStatus[t.id] || {};
-      return `<div class="topic-track-card">
-        <div class="topic-track-title">${t.title}</div>
-        <div class="topic-track-row">
-          <div class="topic-track-item">${statusDotHTML(st.urok)} Урок</div>
-          <div class="topic-track-item">${statusDotHTML(st.hw)} Домашка</div>
-        </div>
-      </div>`;
-    }).join('');
+  const entries = await loadLessonEntries(studentId);
+  const container = document.getElementById('trackerStudentView');
+  if(!entries.length){
+    container.innerHTML = '<div class="empty-state">Пока нет занятий в трекере — преподаватель ещё не добавил записи.</div>';
+    return;
   }
-  const mockTests = await loadMockTests();
-  const mockEl = document.getElementById('mockTrackList');
-  progress.mockScores = progress.mockScores || {};
-  if(!mockTests.length){
-    mockEl.innerHTML = '<div class="empty-state">Пробников пока нет.</div>';
-  } else {
-    mockEl.innerHTML = mockTests.map(m=>{
-      const score = progress.mockScores[m.id];
-      const scoreColor = score==null ? 'var(--muted)' : (score>=70 ? '#2E9E5B' : score>=50 ? '#E8B93F' : '#C23B3B');
-      return `<div class="mock-track-card">
-        <div class="mock-track-name">${m.title}</div>
-        <div class="mock-track-score" style="color:${scoreColor};">${score==null ? '—' : score+'%'}</div>
-      </div>`;
-    }).join('');
-  }
+  const rows = entries.map(en => `
+    <tr>
+      <td>${trackerDateLabel(en.date)}</td>
+      <td>${boolDotHTML(en.urok, false)}</td>
+      <td>${boolDotHTML(en.homework, false)}</td>
+      <td>${boolDotHTML(en.paid, false, null, 'problem')}</td>
+    </tr>`).join('');
+  container.innerHTML = `
+    <div class="tracker-scroll">
+      <table class="tracker-table">
+        <thead><tr><th>Дата</th><th>Урок проведён</th><th>Домашка сделана</th><th>Оплачено</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
 }
 
 /* ================= TRACKER (admin) ================= */
+let trackerStudentId = null;
 async function renderTrackerAdmin(){
   roster = await loadRoster();
-  const topics = await loadGrammarNotes();
-  const mockTests = await loadMockTests();
+  const select = document.getElementById('trackerStudentSelect');
   const table = document.getElementById('trackerTable');
   const emptyEl = document.getElementById('trackerEmpty');
-  if(!roster.length || (!topics.length && !mockTests.length)){
+  if(!roster.length){
+    select.innerHTML = '<option value="">Нет учеников</option>';
     table.innerHTML = '';
     emptyEl.style.display = 'block';
+    emptyEl.textContent = 'Сначала добавьте учеников в разделе «Ученики».';
+    return;
+  }
+  if(!trackerStudentId || !roster.some(s=>s.id===trackerStudentId)) trackerStudentId = roster[0].id;
+  select.innerHTML = roster.map(s=>`<option value="${s.id}" ${s.id===trackerStudentId?'selected':''}>${s.name}</option>`).join('');
+  await renderTrackerTable();
+}
+async function renderTrackerTable(){
+  const table = document.getElementById('trackerTable');
+  const emptyEl = document.getElementById('trackerEmpty');
+  if(!trackerStudentId){ table.innerHTML = ''; emptyEl.style.display = 'none'; return; }
+  const entries = await loadLessonEntries(trackerStudentId);
+  if(!entries.length){
+    table.innerHTML = '';
+    emptyEl.style.display = 'block';
+    emptyEl.textContent = 'У этого ученика пока нет занятий в трекере. Нажмите «+ Добавить занятие».';
     return;
   }
   emptyEl.style.display = 'none';
+  const head = '<thead><tr><th>Дата</th><th>Урок проведён</th><th>Домашка сделана</th><th>Оплачено</th><th></th></tr></thead>';
+  const body = entries.map(en => `
+    <tr>
+      <td><input type="date" class="tracker-date-input" data-entry="${en.id}" value="${en.date||''}"></td>
+      <td>${boolDotHTML(en.urok, true, `data-entry="${en.id}" data-field="urok" data-val="${en.urok?1:0}"`)}</td>
+      <td>${boolDotHTML(en.homework, true, `data-entry="${en.id}" data-field="homework" data-val="${en.homework?1:0}"`)}</td>
+      <td>${boolDotHTML(en.paid, true, `data-entry="${en.id}" data-field="paid" data-val="${en.paid?1:0}"`, 'problem')}</td>
+      <td><button class="tracker-del-entry" data-del-entry="${en.id}">Удалить</button></td>
+    </tr>`).join('');
+  table.innerHTML = head + `<tbody>${body}</tbody>`;
 
-  const progresses = {};
-  await Promise.all(roster.map(async s=>{ progresses[s.id] = await loadProgress(s.id); }));
-
-  let headRow1 = '<th class="name-th" rowspan="2">ФИО</th>';
-  topics.forEach(t=> headRow1 += `<th colspan="2">${t.title}</th>`);
-  if(mockTests.length) headRow1 += `<th colspan="${mockTests.length}">Пробники</th>`;
-
-  let headRow2 = '';
-  topics.forEach(()=> headRow2 += '<th>Урок</th><th>Домашка</th>');
-  mockTests.forEach(m=> headRow2 += `<th>${m.title} <button class="tracker-del-mock" data-del-mock="${m.id}" title="Удалить пробник">✕</button></th>`);
-
-  const bodyRows = roster.map((s,i)=>{
-    const p = progresses[s.id];
-    p.topicStatus = p.topicStatus || {};
-    p.mockScores = p.mockScores || {};
-    const color = TRACKER_AVATAR_COLORS[i % TRACKER_AVATAR_COLORS.length];
-    let row = `<td class="name-cell"><div class="tracker-name-row"><span class="tracker-avatar" style="background:${color};">${initials(s.name)}</span>${s.name}</div></td>`;
-    topics.forEach(t=>{
-      const st = p.topicStatus[t.id] || {};
-      row += `<td>${statusDotHTML(st.urok, true, `data-student="${s.id}" data-topic="${t.id}" data-field="urok"`)}</td>`;
-      row += `<td>${statusDotHTML(st.hw, true, `data-student="${s.id}" data-topic="${t.id}" data-field="hw"`)}</td>`;
-    });
-    mockTests.forEach(m=>{
-      const score = p.mockScores[m.id];
-      row += `<td><input type="text" class="tracker-mock-input" data-student="${s.id}" data-mock="${m.id}" value="${score==null ? '' : score}" placeholder="—"></td>`;
-    });
-    return `<tr>${row}</tr>`;
-  }).join('');
-
-  table.innerHTML = `<thead><tr>${headRow1}</tr><tr>${headRow2}</tr></thead><tbody>${bodyRows}</tbody>`;
-
-  table.querySelectorAll('button.status-dot[data-student]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      const sid = btn.dataset.student, tid = btn.dataset.topic, field = btn.dataset.field;
-      const p = progresses[sid];
-      p.topicStatus[tid] = p.topicStatus[tid] || {};
-      const next = nextStatus(p.topicStatus[tid][field]);
-      p.topicStatus[tid][field] = next;
-      btn.className = 'status-dot st-' + next;
-      btn.textContent = STATUS_ICON[next];
-      await saveProgress(sid, p);
-    });
-  });
-
-  table.querySelectorAll('.tracker-mock-input').forEach(inp=>{
+  table.querySelectorAll('.tracker-date-input').forEach(inp=>{
     inp.addEventListener('change', async ()=>{
-      const sid = inp.dataset.student, mid = inp.dataset.mock;
-      const raw = inp.value.trim();
-      const p = progresses[sid];
-      p.mockScores = p.mockScores || {};
-      if(raw === ''){ delete p.mockScores[mid]; }
-      else {
-        const num = Math.max(0, Math.min(100, parseInt(raw,10)||0));
-        p.mockScores[mid] = num;
-        inp.value = num;
-      }
-      await saveProgress(sid, p);
+      await updateLessonEntry(inp.dataset.entry, { date: inp.value });
+      await renderTrackerTable();
     });
   });
-
-  table.querySelectorAll('[data-del-mock]').forEach(btn=>{
-    btn.addEventListener('click', async (e)=>{
-      e.stopPropagation();
-      if(!confirm('Удалить этот пробник у всех учеников?')) return;
-      await deleteMockTest(btn.dataset.delMock);
-      await renderTrackerAdmin();
+  table.querySelectorAll('button.status-dot[data-entry]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.entry, field = btn.dataset.field;
+      const next = btn.dataset.val !== '1';
+      await updateLessonEntry(id, { [field]: next });
+      await renderTrackerTable();
+    });
+  });
+  table.querySelectorAll('[data-del-entry]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      if(!confirm('Удалить это занятие из трекера?')) return;
+      await deleteLessonEntry(btn.dataset.delEntry);
+      await renderTrackerTable();
     });
   });
 }
-document.getElementById('addMockTestBtn').addEventListener('click', async ()=>{
-  const title = prompt('Название пробника (например, «Пробник 3»):');
-  if(!title || !title.trim()) return;
-  await addMockTest(title.trim());
-  await renderTrackerAdmin();
+document.getElementById('trackerStudentSelect').addEventListener('change', async (e)=>{
+  trackerStudentId = e.target.value;
+  await renderTrackerTable();
+});
+document.getElementById('addLessonEntryBtn').addEventListener('click', async ()=>{
+  if(!trackerStudentId) return;
+  const today = new Date().toISOString().slice(0,10);
+  await addLessonEntry(trackerStudentId, today);
+  await renderTrackerTable();
 });
 
 /* ================= RECORDINGS (записи с уроков) ================= */
