@@ -322,6 +322,58 @@
     display:inline-block; margin-top:10px; background:var(--forest); color:var(--cream-text);
     border-radius:8px; padding:8px 14px; font-size:12.5px; font-weight:700; text-decoration:none;
   }
+  .file-thumb{
+    display:block; margin-top:10px; max-width:260px; max-height:220px; border-radius:10px;
+    border:1px solid var(--panel-border); cursor:pointer; object-fit:cover;
+  }
+  .file-uploading{ font-size:12.5px; color:var(--teal); font-weight:700; margin-top:8px; }
+  .target-badge{
+    display:inline-block; background:var(--panel-light); border:1px solid var(--panel-border); color:var(--muted);
+    border-radius:20px; padding:3px 10px; font-size:11.5px; font-weight:700; margin-top:4px;
+  }
+
+  /* ---------- HOMEWORK STATUS/GRADE ---------- */
+  .hw-status-badge{
+    display:inline-block; border-radius:20px; padding:4px 12px; font-size:12px; font-weight:700; margin-top:8px;
+  }
+  .hw-status-badge.hw-notsubmitted{ background:#F1E4E4; color:#A33; }
+  .hw-status-badge.hw-review{ background:#FCEFC4; color:#8A6A0A; }
+  .hw-status-badge.hw-checked{ background:#DCF0E2; color:#1F7A46; }
+  .hw-status-badge.hw-expired{ background:#F1E4E4; color:#A33; }
+  .hw-deadline-row{ font-size:12.5px; color:var(--muted); margin-top:8px; font-weight:600; }
+  .hw-deadline-row.expired{ color:#A33; font-weight:700; }
+  .hw-lesson-tag{
+    display:inline-block; background:var(--panel-light); border:1px solid var(--panel-border); color:var(--teal);
+    border-radius:20px; padding:3px 10px; font-size:11.5px; font-weight:700; margin-top:4px; margin-left:6px;
+  }
+  .tracker-hw-select{
+    width:100%; border:1px solid var(--panel-border); border-radius:8px; padding:5px 6px;
+    font-family:inherit; font-size:12.5px; background:var(--panel-light); color:var(--text); margin-bottom:5px;
+  }
+  .hw-grade-row{ display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap; }
+  .hw-grade-num{
+    display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%;
+    background:var(--forest); color:var(--cream-text); font-weight:800; font-size:15px;
+  }
+  .hw-comment{
+    background:var(--panel-light); border:1px solid var(--panel-border); border-radius:10px; padding:10px 13px;
+    font-size:13.5px; color:var(--text); margin-top:8px; line-height:1.5;
+  }
+  .hw-admin-controls{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; align-items:flex-end; }
+  .hw-admin-controls .field{ margin-bottom:0; }
+  .hw-status-select, .hw-grade-select{
+    border:1px solid var(--panel-border); border-radius:9px; padding:9px 11px; background:var(--panel-light);
+    color:var(--text); font-size:13px; font-family:inherit;
+  }
+  .hw-comment-input{
+    width:100%; border:1px solid var(--panel-border); border-radius:9px; padding:9px 11px; background:var(--panel-light);
+    color:var(--text); font-size:13px; font-family:inherit; resize:vertical;
+  }
+  .hw-save-btn{
+    background:var(--gold); color:#fff; border:none; border-radius:9px; padding:9px 16px; font-size:13px;
+    font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .hw-save-btn:hover{ background:var(--gold-soft); }
 
   /* ---------- MATERIALS MANAGEMENT ---------- */
   .mat-form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
@@ -332,6 +384,10 @@
     gap:10px;
   }
   .mat-list-item-body{ flex:1; min-width:0; }
+  .hw-admin-card{
+    background:var(--panel-light); border-radius:9px; padding:12px 14px; margin-bottom:10px; font-size:13.5px;
+  }
+  .hw-admin-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:8px; }
   .mat-list-cat{ font-size:11px; color:var(--teal); font-weight:700; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:2px; }
   .mat-list-main{ display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
   .mat-list-ar{ font-family:'JetBrains Mono', monospace; font-size:18px; color:var(--arabic-dark); }
@@ -733,6 +789,8 @@
           <div class="admin-card-title">Теория</div>
           <div class="field"><label>Заголовок темы</label><input type="text" id="newGrammarTitle" placeholder="Например, Теорема Пифагора"></div>
           <div class="field"><label>Объяснение</label><textarea id="newGrammarBody" rows="4" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Текст объяснения темы"></textarea></div>
+          <div class="field"><label>Ссылка на файл (необязательно)</label><input type="text" id="newGrammarLink" placeholder="https://..."></div>
+          <div class="field"><label>Кому видно</label><div class="student-check-list" id="grammarStudentChecks"></div></div>
           <button class="btn-primary" id="addGrammarNoteBtn" style="max-width:200px;">Добавить тему</button>
           <div class="login-error" id="grammarNoteError"></div>
           <div style="margin-top:18px;" id="grammarNotesList"></div>
@@ -741,31 +799,15 @@
 
       <div class="admin-view" id="adminViewTasks">
         <div class="admin-card">
-          <div class="admin-card-title">🧮 Устный счёт</div>
-          <div class="field"><label>Заголовок</label><input type="text" id="newListenTitle" placeholder="Например, Устный счёт: таблица на 7"></div>
-          <div class="field"><label>Описание задания</label><textarea id="newListenBody" rows="3" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Что нужно сделать ученику"></textarea></div>
-          <div class="field"><label>Ссылка на тренажёр (необязательно)</label><input type="text" id="newListenLink" placeholder="https://..."></div>
-          <button class="btn-primary" id="addListenBtn" style="max-width:200px;">Добавить задание</button>
-          <div class="login-error" id="listenError"></div>
-          <div style="margin-top:18px;" id="listenTasksList"></div>
-        </div>
-        <div class="admin-card">
-          <div class="admin-card-title">📝 Задачи</div>
-          <div class="field"><label>Заголовок</label><input type="text" id="newReadTitle" placeholder="Например, Задача про поезда"></div>
-          <div class="field"><label>Текст / описание задания</label><textarea id="newReadBody" rows="3" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Условие задачи или инструкция"></textarea></div>
-          <div class="field"><label>Ссылка (необязательно)</label><input type="text" id="newReadLink" placeholder="https://..."></div>
-          <button class="btn-primary" id="addReadBtn" style="max-width:200px;">Добавить задание</button>
-          <div class="login-error" id="readError"></div>
-          <div style="margin-top:18px;" id="readTasksList"></div>
-        </div>
-        <div class="admin-card">
-          <div class="admin-card-title">📐 Контрольные</div>
-          <div class="field"><label>Заголовок</label><input type="text" id="newWriteTitle" placeholder="Например, Контрольная №1: Дроби"></div>
-          <div class="field"><label>Описание задания</label><textarea id="newWriteBody" rows="3" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Что нужно повторить или решить ученику"></textarea></div>
-          <div class="field"><label>Ссылка (необязательно)</label><input type="text" id="newWriteLink" placeholder="https://..."></div>
-          <button class="btn-primary" id="addWriteBtn" style="max-width:200px;">Добавить задание</button>
-          <div class="login-error" id="writeError"></div>
-          <div style="margin-top:18px;" id="writeTasksList"></div>
+          <div class="admin-card-title">Домашняя работа</div>
+          <div class="field"><label>Заголовок</label><input type="text" id="newHwTitle" placeholder="Например, Дроби: задачи №1-10"></div>
+          <div class="field"><label>Описание задания</label><textarea id="newHwBody" rows="3" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Что нужно сделать ученику"></textarea></div>
+          <div class="field"><label>Ссылка на файл (необязательно)</label><input type="text" id="newHwLink" placeholder="https://..."></div>
+          <div class="field"><label>Дедлайн (необязательно)</label><input type="datetime-local" id="newHwDeadline"></div>
+          <div class="field"><label>Кому видно</label><div class="student-check-list" id="hwStudentChecks"></div></div>
+          <button class="btn-primary" id="addHwBtn" style="max-width:200px;">Добавить задание</button>
+          <div class="login-error" id="hwError"></div>
+          <div style="margin-top:18px;" id="hwTasksList"></div>
         </div>
       </div>
 
@@ -773,9 +815,8 @@
         <div class="admin-card">
           <div class="tracker-toolbar">
             <div class="admin-card-title" style="margin:0;">Трекер прогресса</div>
-            <button class="btn-primary" id="addLessonEntryBtn" style="max-width:220px; margin:0;">+ Добавить занятие</button>
           </div>
-          <div class="section-desc">Выберите ученика — у каждого свой индивидуальный трекер. Нажимайте на кружки, чтобы отметить статус.</div>
+          <div class="section-desc">Выберите ученика — у каждого свой индивидуальный трекер. Занятия появляются здесь автоматически при создании в расписании.</div>
           <div class="field" style="max-width:320px; margin-bottom:16px;">
             <label>Ученик</label>
             <select id="trackerStudentSelect" class="tracker-student-select"></select>
@@ -792,8 +833,9 @@
           <div class="admin-card-title">Запись с урока</div>
           <div class="field"><label>Заголовок</label><input type="text" id="newRecTitle" placeholder="Например, Урок 12: Квадратные уравнения"></div>
           <div class="field"><label>Дата (необязательно)</label><input type="date" id="newRecDate"></div>
-          <div class="field"><label>Ссылка на запись</label><input type="text" id="newRecLink" placeholder="https://..."></div>
+          <div class="field"><label>Ссылка на файл</label><input type="text" id="newRecLink" placeholder="https://..."></div>
           <div class="field"><label>Заметка (необязательно)</label><textarea id="newRecNote" rows="2" style="width:100%; background:var(--panel-light); border:1px solid var(--panel-border); border-radius:9px; padding:11px 13px; color:var(--text); font-size:14px; font-family:inherit; resize:vertical;" placeholder="Что было на уроке"></textarea></div>
+          <div class="field"><label>Кому видно</label><div class="student-check-list" id="recStudentChecks"></div></div>
           <button class="btn-primary" id="addRecBtn" style="max-width:200px;">Добавить запись</button>
           <div class="login-error" id="recError"></div>
           <div style="margin-top:18px;" id="recordingsAdminList"></div>
@@ -819,12 +861,12 @@
         <button class="sidebar-tab-btn" data-tab="practice"><span class="tab-icon">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.6"/><circle cx="10" cy="10" r="0.9" fill="currentColor" stroke="none"/></svg>
         </span>Домашняя работа</button>
-        <button class="sidebar-tab-btn" data-tab="progress"><span class="tab-icon">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 16.5 V11"/><path d="M9 16.5 V6"/><path d="M14 16.5 V9.5"/><path d="M3 16.5 H17"/></svg>
-        </span>Прогресс</button>
         <button class="sidebar-tab-btn" data-tab="grammar"><span class="tab-icon">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="4" width="12" height="12" transform="rotate(45 10 10)" stroke-linejoin="round"/><rect x="7.3" y="7.3" width="5.4" height="5.4" transform="rotate(45 10 10)" stroke-linejoin="round"/></svg>
         </span>Теория</button>
+        <button class="sidebar-tab-btn" data-tab="progress"><span class="tab-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 16.5 V11"/><path d="M9 16.5 V6"/><path d="M14 16.5 V9.5"/><path d="M3 16.5 H17"/></svg>
+        </span>Прогресс</button>
       </nav>
       <div class="sidebar-footer">π ≈ 3.14159265…<br>Числа — язык, который понимают все</div>
     </aside>
@@ -909,11 +951,11 @@
         </div>
       </section>
 
-      <!-- PRACTICE HUB -->
+      <!-- HOMEWORK -->
       <section class="section" id="section-practice">
-        <div class="section-title">Практика</div>
-        <div class="section-desc">Быстрый доступ ко всем видам практики.</div>
-        <div class="practice-tiles" id="practicePageTiles"></div>
+        <div class="section-title">Домашняя работа</div>
+        <div class="section-desc">Задания от преподавателя, ваш статус выполнения и оценка.</div>
+        <div id="homeworkList"></div>
       </section>
 
       <!-- THEORY -->
@@ -928,6 +970,7 @@
           <div class="content-note" style="margin-top:14px;">
             <div class="content-note-title" id="grammarDetailTitle"></div>
             <div class="content-note-body" id="grammarDetailBody"></div>
+            <div id="grammarDetailFile"></div>
           </div>
         </div>
       </section>
@@ -937,27 +980,6 @@
         <div class="section-title">Записи с уроков</div>
         <div class="section-desc">Видеозаписи ваших занятий от преподавателя.</div>
         <div id="recordingsList"></div>
-      </section>
-
-      <!-- LISTENING -->
-      <section class="section" id="section-listening">
-        <div class="section-title">Устный счёт</div>
-        <div class="section-desc">Задания на устный счёт от преподавателя.</div>
-        <div id="listeningList"></div>
-      </section>
-
-      <!-- READING -->
-      <section class="section" id="section-reading">
-        <div class="section-title">Задачи</div>
-        <div class="section-desc">Текстовые задачи от преподавателя.</div>
-        <div id="readingList"></div>
-      </section>
-
-      <!-- WRITING -->
-      <section class="section" id="section-writing">
-        <div class="section-title">Контрольные</div>
-        <div class="section-desc">Задания для подготовки к контрольным от преподавателя.</div>
-        <div id="writingList"></div>
       </section>
 
       <!-- PROGRESS -->
@@ -1216,12 +1238,9 @@ function activateTab(tabName){
   document.getElementById('section-'+tabName).classList.add('active');
   if(tabName === 'progress') renderProgress();
   if(tabName === 'home') renderHome();
-  if(tabName === 'practice') renderPracticeHub();
+  if(tabName === 'practice') renderHomeworkList();
   if(tabName === 'grammar') renderGrammarList();
   if(tabName === 'recordings') renderRecordingsList();
-  if(tabName === 'listening') renderListeningList();
-  if(tabName === 'reading') renderReadingList();
-  if(tabName === 'writing') renderWritingList();
 }
 document.querySelectorAll('.sidebar-tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=> activateTab(btn.dataset.tab));
@@ -1243,9 +1262,13 @@ async function loadLessonEntries(sid){
       .sort((a,b)=> (a.date||'').localeCompare(b.date||'') || (a.createdAt||0)-(b.createdAt||0));
   }catch(e){ console.error('load lesson entries failed', e); return []; }
 }
-async function addLessonEntry(sid, date){
-  try{ await db.collection('lessonEntries').add({ studentId: sid, date, urok:false, homework:false, paid:false, createdAt: Date.now() }); }
-  catch(e){ console.error('add lesson entry failed', e); }
+async function loadAllLessonEntries(){
+  try{
+    const snap = await db.collection('lessonEntries').get();
+    const map = {};
+    snap.docs.forEach(d => map[d.id] = { id:d.id, ...d.data() });
+    return map;
+  }catch(e){ console.error('load all lesson entries failed', e); return {}; }
 }
 async function updateLessonEntry(id, patch){
   try{ await db.collection('lessonEntries').doc(id).update(patch); }
@@ -1268,17 +1291,26 @@ async function renderProgress(){
     container.innerHTML = '<div class="empty-state">Пока нет занятий в трекере — преподаватель ещё не добавил записи.</div>';
     return;
   }
-  const rows = entries.map(en => `
+  const tasks = await loadTasks('homeworkTasks');
+  const taskById = {};
+  tasks.forEach(t => taskById[t.id] = t);
+  const rows = entries.map(en => {
+    const task = en.homeworkTaskId ? taskById[en.homeworkTaskId] : null;
+    const hwCell = task
+      ? `${task.title}<br><span class="hw-status-badge ${HW_STATUS_CLASS[en.homework||'notsubmitted']}" style="margin-top:4px;">${HW_STATUS_LABEL[en.homework||'notsubmitted']}</span>`
+      : '—';
+    return `
     <tr>
       <td>${trackerDateLabel(en.date)}</td>
       <td>${boolDotHTML(en.urok, false)}</td>
-      <td>${boolDotHTML(en.homework, false)}</td>
+      <td>${hwCell}</td>
       <td>${boolDotHTML(en.paid, false, null, 'problem')}</td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
   container.innerHTML = `
     <div class="tracker-scroll">
       <table class="tracker-table">
-        <thead><tr><th>Дата</th><th>Урок проведён</th><th>Домашка сделана</th><th>Оплачено</th></tr></thead>
+        <thead><tr><th>Дата</th><th>Урок проведён</th><th>Домашка</th><th>Оплачено</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
@@ -1310,20 +1342,39 @@ async function renderTrackerTable(){
   if(!entries.length){
     table.innerHTML = '';
     emptyEl.style.display = 'block';
-    emptyEl.textContent = 'У этого ученика пока нет занятий в трекере. Нажмите «+ Добавить занятие».';
+    emptyEl.textContent = 'У этого ученика пока нет занятий в трекере. Занятия появляются здесь автоматически при создании в расписании.';
     return;
   }
   emptyEl.style.display = 'none';
-  const head = '<thead><tr><th>Дата</th><th>Урок проведён</th><th>Домашка сделана</th><th>Оплачено</th><th></th></tr></thead>';
-  const body = entries.map(en => `
+  const allTasks = (await loadTasks('homeworkTasks')).filter(t => isVisibleToStudent(t, trackerStudentId));
+  const head = '<thead><tr><th>Дата</th><th>Урок проведён</th><th>Домашка</th><th>Оплачено</th><th></th></tr></thead>';
+  const body = entries.map(en => {
+    const eligible = allTasks.filter(t => !t.lessonEntryId || t.lessonEntryId === en.id);
+    const options = ['<option value="">— Нет домашки —</option>']
+      .concat(eligible.map(t => `<option value="${t.id}" ${en.homeworkTaskId===t.id?'selected':''}>${t.title}</option>`));
+    const statusBadge = en.homeworkTaskId
+      ? `<span class="hw-status-badge ${HW_STATUS_CLASS[en.homework||'notsubmitted']}">${HW_STATUS_LABEL[en.homework||'notsubmitted']}</span>`
+      : '';
+    return `
     <tr>
       <td><input type="date" class="tracker-date-input" data-entry="${en.id}" value="${en.date||''}"></td>
       <td>${boolDotHTML(en.urok, true, `data-entry="${en.id}" data-field="urok" data-val="${en.urok?1:0}"`)}</td>
-      <td>${boolDotHTML(en.homework, true, `data-entry="${en.id}" data-field="homework" data-val="${en.homework?1:0}"`)}</td>
+      <td>
+        <select class="tracker-hw-select" data-hw-entry="${en.id}">${options.join('')}</select>
+        ${statusBadge}
+      </td>
       <td>${boolDotHTML(en.paid, true, `data-entry="${en.id}" data-field="paid" data-val="${en.paid?1:0}"`, 'problem')}</td>
       <td><button class="tracker-del-entry" data-del-entry="${en.id}">Удалить</button></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
   table.innerHTML = head + `<tbody>${body}</tbody>`;
+
+  table.querySelectorAll('[data-hw-entry]').forEach(sel=>{
+    sel.addEventListener('change', async ()=>{
+      await attachHomeworkToEntry(sel.dataset.hwEntry, sel.value, trackerStudentId);
+      await renderTrackerTable();
+    });
+  });
 
   table.querySelectorAll('.tracker-date-input').forEach(inp=>{
     inp.addEventListener('change', async ()=>{
@@ -1342,19 +1393,39 @@ async function renderTrackerTable(){
   table.querySelectorAll('[data-del-entry]').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
       if(!confirm('Удалить это занятие из трекера?')) return;
-      await deleteLessonEntry(btn.dataset.delEntry);
+      const id = btn.dataset.delEntry;
+      const en = entries.find(e=>e.id===id);
+      if(en && en.homeworkTaskId){
+        try{ await db.collection('homeworkTasks').doc(en.homeworkTaskId).update({ lessonEntryId: null }); }catch(e){ console.error(e); }
+      }
+      await deleteLessonEntry(id);
       await renderTrackerTable();
     });
   });
 }
+async function attachHomeworkToEntry(entryId, taskId, sid){
+  try{
+    const entriesSnap = await db.collection('lessonEntries').doc(entryId).get();
+    const entry = entriesSnap.data();
+    if(entry && entry.homeworkTaskId && entry.homeworkTaskId !== taskId){
+      await db.collection('homeworkTasks').doc(entry.homeworkTaskId).update({ lessonEntryId: null });
+    }
+    if(taskId){
+      const taskSnap = await db.collection('homeworkTasks').doc(taskId).get();
+      const task = taskSnap.data();
+      if(task && task.lessonEntryId && task.lessonEntryId !== entryId){
+        await db.collection('lessonEntries').doc(task.lessonEntryId).update({ homeworkTaskId: null, homework: null });
+      }
+      const status = (task && task.statuses && task.statuses[sid]) || 'notsubmitted';
+      await db.collection('homeworkTasks').doc(taskId).update({ lessonEntryId: entryId });
+      await updateLessonEntry(entryId, { homeworkTaskId: taskId, homework: status });
+    } else {
+      await updateLessonEntry(entryId, { homeworkTaskId: null, homework: null });
+    }
+  }catch(e){ console.error('attach homework failed', e); }
+}
 document.getElementById('trackerStudentSelect').addEventListener('change', async (e)=>{
   trackerStudentId = e.target.value;
-  await renderTrackerTable();
-});
-document.getElementById('addLessonEntryBtn').addEventListener('click', async ()=>{
-  if(!trackerStudentId) return;
-  const today = new Date().toISOString().slice(0,10);
-  await addLessonEntry(trackerStudentId, today);
   await renderTrackerTable();
 });
 
@@ -1366,7 +1437,7 @@ async function loadRecordings(){
   }catch(e){ console.error('load recordings failed', e); return []; }
 }
 async function renderRecordingsList(){
-  const list = await loadRecordings();
+  const list = (await loadRecordings()).filter(r => isVisibleToStudent(r, studentId));
   const el = document.getElementById('recordingsList');
   if(!list.length){ el.innerHTML = '<div class="empty-state">Записей пока нет.</div>'; return; }
   el.innerHTML = list.map(r=>{
@@ -1376,17 +1447,22 @@ async function renderRecordingsList(){
         ${dateLabel ? `<div class="recording-date">${dateLabel}</div>` : ''}
         <div class="recording-title">${r.title}</div>
         ${r.note ? `<div class="recording-note">${(r.note||'').replace(/</g,'&lt;')}</div>` : ''}
+        ${fileAttachmentHTML(r)}
       </div>
-      ${r.link ? `<a class="task-link-btn" href="${r.link}" target="_blank" rel="noopener">Смотреть запись ↗</a>` : ''}
     </div>`;
   }).join('');
 }
 async function renderRecordingsAdmin(){
+  roster = await loadRoster();
+  renderStudentCheckList('recStudentChecks');
   const list = await loadRecordings();
   const el = document.getElementById('recordingsAdminList');
   el.innerHTML = !list.length ? '<div class="empty-state">Пока нет записей.</div>' : list.map(r=>`
     <div class="mat-list-item">
-      <div class="mat-list-item-body"><div class="mat-list-sub" style="font-weight:700; color:var(--text);">${r.title}${r.date ? ' · '+r.date : ''}</div></div>
+      <div class="mat-list-item-body">
+        <div class="mat-list-sub" style="font-weight:700; color:var(--text);">${r.title}${r.date ? ' · '+r.date : ''}</div>
+        <div class="target-badge">${targetBadgeLabel(r)}</div>
+      </div>
       <button class="lesson-del-btn" data-del-rec="${r.id}">Удалить</button>
     </div>`).join('');
   el.querySelectorAll('[data-del-rec]').forEach(btn=>{
@@ -1397,16 +1473,17 @@ document.getElementById('addRecBtn').addEventListener('click', async ()=>{
   const errEl = document.getElementById('recError');
   const title = document.getElementById('newRecTitle').value.trim();
   const date = document.getElementById('newRecDate').value;
-  const link = document.getElementById('newRecLink').value.trim();
   const note = document.getElementById('newRecNote').value.trim();
-  if(!title || !link){ errEl.textContent = 'Заполните заголовок и ссылку.'; return; }
+  const link = document.getElementById('newRecLink').value.trim();
+  if(!title || !link){ errEl.textContent = 'Заполните заголовок и ссылку на файл.'; return; }
   errEl.textContent = '';
-  try{ await db.collection('recordings').add({ title, date, link, note, createdAt: Date.now() }); }
+  const studentIds = getCheckedStudentIds('recStudentChecks');
+  try{ await db.collection('recordings').add({ title, date, note, link, studentIds, createdAt: Date.now() }); }
   catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
   document.getElementById('newRecTitle').value = '';
   document.getElementById('newRecDate').value = '';
-  document.getElementById('newRecLink').value = '';
   document.getElementById('newRecNote').value = '';
+  document.getElementById('newRecLink').value = '';
   await renderRecordingsAdmin();
 });
 
@@ -1572,13 +1649,18 @@ document.getElementById('addLessonBtn').addEventListener('click', async ()=>{
   const count = recurring ? weeks : 1;
   const baseDate = new Date(date+'T00:00:00');
   try{
-    const batchWrites = [];
+    const lessonWrites = [];
     for(let i=0;i<count;i++){
       const d = new Date(baseDate); d.setDate(d.getDate() + i*7);
       const dateStr = fmtDate(d.getFullYear(), d.getMonth(), d.getDate());
-      batchWrites.push(db.collection('lessons').add({ studentIds: ids, date: dateStr, time, duration, note, seriesId }));
+      const p = db.collection('lessons').add({ studentIds: ids, date: dateStr, time, duration, note, seriesId })
+        .then(lessonRef => Promise.all(ids.map(sid => db.collection('lessonEntries').add({
+          studentId: sid, date: dateStr, urok:false, homework:null, homeworkTaskId:null, paid:false,
+          lessonId: lessonRef.id, createdAt: Date.now()
+        }))));
+      lessonWrites.push(p);
     }
-    await Promise.all(batchWrites);
+    await Promise.all(lessonWrites);
   }catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить занятие.'; return; }
   document.querySelectorAll('.student-check.checked').forEach(el=>el.classList.remove('checked'));
   document.getElementById('lessonNote').value = '';
@@ -1697,31 +1779,43 @@ async function renderHome(){
   await initStudentSchedule();
 }
 
-function buildPracticeTiles(containerId){
-  const el = document.getElementById(containerId);
-  if(!el) return;
-  const ICONS = {
-    ear: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="12" r="2.4"/><path d="M12.5 6.5a7 7 0 0 1 0 11"/><path d="M15 8.7a4 4 0 0 1 0 6.6"/><path d="M17.5 6a9.8 9.8 0 0 1 0 12"/></svg>',
-    scroll: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linejoin="round"><path d="M6 4.5h9c1.4 0 2.5 1.1 2.5 2.5v11" stroke-linecap="round"/><path d="M6 4.5A2 2 0 0 0 4 6.5v11a2 2 0 0 0 2 2h11.5c-1.4 0-2.5-1.1-2.5-2.5V7" stroke-linecap="round"/><path d="M8 9h6M8 12.5h6M8 16h3.5" stroke-linecap="round"/></svg>',
-    pen: '<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19l1-4.2L14.8 6a1.8 1.8 0 0 1 2.5 0l.7.7a1.8 1.8 0 0 1 0 2.5L9.2 18Z"/><path d="M13 7.8l3.2 3.2"/><path d="M5 19h4.2"/></svg>'
-  };
-  const tiles = [
-    { icon:ICONS.ear, title:'Устный счёт', sub:'Быстрые тренировки', tab:'listening' },
-    { icon:ICONS.scroll, title:'Задачи', sub:'Текстовые задачи', tab:'reading' },
-    { icon:ICONS.pen, title:'Контрольные', sub:'Подготовка к контрольным', tab:'writing' }
-  ];
-  el.innerHTML = tiles.map((t,i)=>`
-    <button class="practice-tile" data-tile-i="${i}">
-      <div class="practice-tile-icon">${t.icon}</div>
-      <div class="practice-tile-title">${t.title}</div>
-      <div class="practice-tile-sub">${t.sub}</div>
-    </button>`).join('');
-  el.querySelectorAll('[data-tile-i]').forEach(btn=>{
-    btn.addEventListener('click', ()=> goToTab(tiles[parseInt(btn.dataset.tileI)].tab));
+/* ================= FILE UPLOAD + STUDENT TARGETING (shared) ================= */
+function renderStudentCheckList(containerId){
+  const wrap = document.getElementById(containerId);
+  if(!roster.length){ wrap.innerHTML = '<span style="color:var(--muted); font-size:13px;">Сначала добавьте учеников во вкладке «Ученики».</span>'; return; }
+  wrap.innerHTML = `<div class="student-check checked" data-id="__all__">Все ученики</div>` +
+    roster.map(s=>`<div class="student-check" data-id="${s.id}">${s.name}</div>`).join('');
+  const allBtn = wrap.querySelector('[data-id="__all__"]');
+  const studentBtns = () => Array.from(wrap.querySelectorAll('.student-check')).filter(el=>el.dataset.id!=='__all__');
+  allBtn.addEventListener('click', ()=>{
+    allBtn.classList.add('checked');
+    studentBtns().forEach(b=>b.classList.remove('checked'));
+  });
+  studentBtns().forEach(el=>{
+    el.addEventListener('click', ()=>{
+      allBtn.classList.remove('checked');
+      el.classList.toggle('checked');
+      if(!studentBtns().some(b=>b.classList.contains('checked'))) allBtn.classList.add('checked');
+    });
   });
 }
-async function renderPracticeHub(){
-  buildPracticeTiles('practicePageTiles');
+function getCheckedStudentIds(containerId){
+  const wrap = document.getElementById(containerId);
+  const allBtn = wrap.querySelector('[data-id="__all__"]');
+  if(!allBtn || allBtn.classList.contains('checked')) return [];
+  return Array.from(wrap.querySelectorAll('.student-check.checked')).map(el=>el.dataset.id).filter(id=>id!=='__all__');
+}
+function isVisibleToStudent(item, sid){
+  return !item.studentIds || !item.studentIds.length || item.studentIds.includes(sid);
+}
+function targetBadgeLabel(item){
+  if(!item.studentIds || !item.studentIds.length) return 'Все ученики';
+  const names = item.studentIds.map(id => (roster.find(s=>s.id===id) || {}).name).filter(Boolean);
+  return names.length ? names.join(', ') : 'Выбранные ученики';
+}
+function fileAttachmentHTML(item){
+  if(!item.link) return '';
+  return `<a class="task-link-btn" href="${item.link}" target="_blank" rel="noopener">📄 Открыть файл ↗</a>`;
 }
 
 /* ================= THEORY (content) ================= */
@@ -1733,7 +1827,7 @@ async function loadGrammarNotes(){
 }
 
 async function renderGrammarList(){
-  const list = await loadGrammarNotes();
+  const list = (await loadGrammarNotes()).filter(g => isVisibleToStudent(g, studentId));
   const grid = document.getElementById('grammarCardGrid');
   document.getElementById('grammarListView').style.display = 'block';
   document.getElementById('grammarDetailView').style.display = 'none';
@@ -1750,6 +1844,7 @@ async function renderGrammarList(){
       document.getElementById('grammarDetailView').style.display = 'block';
       document.getElementById('grammarDetailTitle').textContent = g.title;
       document.getElementById('grammarDetailBody').textContent = g.body || '';
+      document.getElementById('grammarDetailFile').innerHTML = fileAttachmentHTML(g);
     });
   });
 }
@@ -1762,27 +1857,48 @@ async function loadTasks(collection){
     return snap.docs.map(d=>({ id:d.id, ...d.data() }));
   }catch(e){ console.error('load tasks failed', e); return []; }
 }
-function renderTaskListInto(elId, list, emptyMsg){
-  const el = document.getElementById(elId);
-  if(!list.length){ el.innerHTML = `<div class="empty-state">${emptyMsg}</div>`; return; }
-  el.innerHTML = list.map(t => `
-    <div class="content-note">
-      <div class="content-note-title">${t.title}</div>
-      <div class="content-note-body">${(t.body||'').replace(/</g,'&lt;')}</div>
-      ${t.link ? `<a class="task-link-btn" href="${t.link}" target="_blank" rel="noopener">Открыть материал ↗</a>` : ''}
-    </div>`).join('');
+const HW_STATUS_LABEL = { notsubmitted:'Не сдано', review:'На проверке', checked:'Проверено' };
+const HW_STATUS_CLASS = { notsubmitted:'hw-notsubmitted', review:'hw-review', checked:'hw-checked' };
+function formatDeadline(dt){
+  return new Date(dt).toLocaleString('ru-RU', {day:'numeric', month:'long', hour:'2-digit', minute:'2-digit'});
 }
-async function renderListeningList(){ renderTaskListInto('listeningList', await loadTasks('listeningTasks'), 'Пока нет заданий на устный счёт.'); }
-async function renderReadingList(){ renderTaskListInto('readingList', await loadTasks('readingTasks'), 'Пока нет задач.'); }
-async function renderWritingList(){ renderTaskListInto('writingList', await loadTasks('writingTasks'), 'Пока нет заданий для контрольных.'); }
+async function renderHomeworkList(){
+  const el = document.getElementById('homeworkList');
+  const list = (await loadTasks('homeworkTasks')).filter(t => isVisibleToStudent(t, studentId))
+    .sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
+  if(!list.length){ el.innerHTML = '<div class="empty-state">Пока нет заданий — преподаватель ещё не добавил домашнюю работу.</div>'; return; }
+  const entries = await loadLessonEntries(studentId);
+  el.innerHTML = list.map(t => {
+    const status = (t.statuses || {})[studentId] || 'notsubmitted';
+    const grade = (t.grades || {})[studentId];
+    const comment = (t.comments || {})[studentId];
+    const isExpired = t.deadline && new Date(t.deadline) < new Date();
+    const lesson = t.lessonEntryId ? entries.find(en=>en.id===t.lessonEntryId) : null;
+    return `
+    <div class="content-note">
+      <div class="content-note-title">${t.title}${lesson ? `<span class="hw-lesson-tag">Урок: ${trackerDateLabel(lesson.date)}</span>` : ''}</div>
+      <div class="content-note-body">${(t.body||'').replace(/</g,'&lt;')}</div>
+      ${t.deadline ? `<div class="hw-deadline-row ${isExpired?'expired':''}">${isExpired?'Дедлайн истёк: ':'Сдать до: '}${formatDeadline(t.deadline)}</div>` : ''}
+      ${isExpired ? '<div><span class="hw-status-badge hw-expired">Просрочено</span></div>' : fileAttachmentHTML(t)}
+      <div><span class="hw-status-badge ${HW_STATUS_CLASS[status]}">${HW_STATUS_LABEL[status]}</span></div>
+      ${grade ? `<div class="hw-grade-row"><span class="hw-grade-num">${grade}</span><span style="font-size:13px; color:var(--muted);">Оценка за домашку</span></div>` : ''}
+      ${comment ? `<div class="hw-comment">${comment.replace(/</g,'&lt;')}</div>` : ''}
+    </div>`;
+  }).join('');
+}
 
 /* ---- ADMIN: content management ---- */
 async function renderContentAdmin(){
+  roster = await loadRoster();
+  renderStudentCheckList('grammarStudentChecks');
   const grammar = await loadGrammarNotes();
   const gEl = document.getElementById('grammarNotesList');
   gEl.innerHTML = !grammar.length ? '<div class="empty-state">Пока нет тем.</div>' : grammar.map(g=>`
     <div class="mat-list-item">
-      <div class="mat-list-item-body"><div class="mat-list-sub" style="font-weight:700; color:var(--text);">${g.title}</div></div>
+      <div class="mat-list-item-body">
+        <div class="mat-list-sub" style="font-weight:700; color:var(--text);">${g.title}</div>
+        <div class="target-badge">${targetBadgeLabel(g)}</div>
+      </div>
       <button class="lesson-del-btn" data-del-grammar="${g.id}">Удалить</button>
     </div>`).join('');
   gEl.querySelectorAll('[data-del-grammar]').forEach(btn=>{
@@ -1793,77 +1909,129 @@ document.getElementById('addGrammarNoteBtn').addEventListener('click', async ()=
   const errEl = document.getElementById('grammarNoteError');
   const title = document.getElementById('newGrammarTitle').value.trim();
   const body = document.getElementById('newGrammarBody').value.trim();
+  const link = document.getElementById('newGrammarLink').value.trim();
   if(!title || !body){ errEl.textContent = 'Заполните заголовок и текст.'; return; }
   errEl.textContent = '';
-  try{ await db.collection('grammarNotes').add({ title, body }); }
+  const studentIds = getCheckedStudentIds('grammarStudentChecks');
+  try{ await db.collection('grammarNotes').add({ title, body, link, studentIds }); }
   catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
   document.getElementById('newGrammarTitle').value = '';
   document.getElementById('newGrammarBody').value = '';
+  document.getElementById('newGrammarLink').value = '';
   await renderContentAdmin();
 });
 
 /* ---- ADMIN: tasks (listening/reading/writing) ---- */
-function taskAdminRow(t, collection, refreshFn){
+function homeworkStudentIds(t){
+  return (t.studentIds && t.studentIds.length) ? t.studentIds : roster.map(s=>s.id);
+}
+function taskAdminRow(t){
+  const ids = homeworkStudentIds(t);
+  const rows = ids.map(sid=>{
+    const name = (roster.find(s=>s.id===sid)||{}).name || '—';
+    const status = (t.statuses||{})[sid] || 'notsubmitted';
+    const grade = (t.grades||{})[sid] || '';
+    const comment = ((t.comments||{})[sid] || '').replace(/</g,'&lt;');
+    return `
+      <div class="hw-admin-controls">
+        <div class="field" style="min-width:110px;"><label>${name}</label>
+          <select class="hw-status-select" data-hw-field="status" data-task="${t.id}" data-student="${sid}">
+            <option value="notsubmitted" ${status==='notsubmitted'?'selected':''}>Не сдано</option>
+            <option value="review" ${status==='review'?'selected':''}>На проверке</option>
+            <option value="checked" ${status==='checked'?'selected':''}>Проверено</option>
+          </select>
+        </div>
+        <div class="field" style="width:80px;"><label>Оценка</label>
+          <select class="hw-grade-select" data-hw-field="grade" data-task="${t.id}" data-student="${sid}">
+            <option value="">—</option>
+            ${[1,2,3,4,5].map(n=>`<option value="${n}" ${String(grade)===String(n)?'selected':''}>${n}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field" style="flex:1; min-width:160px;"><label>Комментарий</label>
+          <textarea class="hw-comment-input" rows="1" data-hw-field="comment" data-task="${t.id}" data-student="${sid}">${comment}</textarea>
+        </div>
+        <button class="hw-save-btn" data-hw-save="${t.id}" data-student="${sid}">Сохранить</button>
+      </div>`;
+  }).join('');
   return `
-    <div class="mat-list-item">
-      <div class="mat-list-item-body"><div class="mat-list-sub" style="font-weight:700; color:var(--text);">${t.title}</div></div>
-      <button class="lesson-del-btn" data-del-task="${t.id}" data-coll="${collection}">Удалить</button>
+    <div class="hw-admin-card">
+      <div class="hw-admin-head">
+        <div>
+          <div class="mat-list-sub" style="font-weight:700; color:var(--text);">${t.title}${t.lessonDateLabel ? `<span class="hw-lesson-tag">Урок: ${t.lessonDateLabel}</span>` : ''}</div>
+          <div class="target-badge">${targetBadgeLabel(t)}</div>
+          ${t.deadline ? `<div class="hw-deadline-row">Дедлайн: ${formatDeadline(t.deadline)}</div>` : ''}
+        </div>
+        <button class="lesson-del-btn" data-del-task="${t.id}">Удалить</button>
+      </div>
+      ${rows}
     </div>`;
 }
 async function renderTasksAdmin(){
-  const listen = await loadTasks('listeningTasks');
-  const read = await loadTasks('readingTasks');
-  const write = await loadTasks('writingTasks');
-  document.getElementById('listenTasksList').innerHTML = !listen.length ? '<div class="empty-state">Пока нет заданий.</div>' : listen.map(t=>taskAdminRow(t,'listeningTasks')).join('');
-  document.getElementById('readTasksList').innerHTML = !read.length ? '<div class="empty-state">Пока нет заданий.</div>' : read.map(t=>taskAdminRow(t,'readingTasks')).join('');
-  document.getElementById('writeTasksList').innerHTML = !write.length ? '<div class="empty-state">Пока нет заданий.</div>' : write.map(t=>taskAdminRow(t,'writingTasks')).join('');
-  document.querySelectorAll('[data-del-task]').forEach(btn=>{
+  roster = await loadRoster();
+  renderStudentCheckList('hwStudentChecks');
+  const allEntries = await loadAllLessonEntries();
+  const tasks = (await loadTasks('homeworkTasks')).sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
+  tasks.forEach(t=>{
+    if(t.lessonEntryId && allEntries[t.lessonEntryId]) t.lessonDateLabel = trackerDateLabel(allEntries[t.lessonEntryId].date);
+  });
+  const el = document.getElementById('hwTasksList');
+  el.innerHTML = !tasks.length ? '<div class="empty-state">Пока нет заданий.</div>' : tasks.map(t=>taskAdminRow(t)).join('');
+  el.querySelectorAll('[data-del-task]').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
-      await db.collection(btn.dataset.coll).doc(btn.dataset.delTask).delete();
+      const taskId = btn.dataset.delTask;
+      const task = tasks.find(t=>t.id===taskId);
+      if(task && task.lessonEntryId){
+        try{ await db.collection('lessonEntries').doc(task.lessonEntryId).update({ homeworkTaskId: null, homework: null }); }catch(e){ console.error(e); }
+      }
+      await db.collection('homeworkTasks').doc(taskId).delete();
       await renderTasksAdmin();
     });
   });
+  el.querySelectorAll('[data-hw-save]').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const taskId = btn.dataset.hwSave, sid = btn.dataset.student;
+      const card = btn.closest('.hw-admin-card');
+      const statusSel = card.querySelector(`[data-hw-field="status"][data-student="${sid}"]`);
+      const gradeSel = card.querySelector(`[data-hw-field="grade"][data-student="${sid}"]`);
+      const commentEl = card.querySelector(`[data-hw-field="comment"][data-student="${sid}"]`);
+      const originalLabel = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Сохранение...';
+      try{
+        await db.collection('homeworkTasks').doc(taskId).update({
+          [`statuses.${sid}`]: statusSel.value,
+          [`grades.${sid}`]: gradeSel.value ? parseInt(gradeSel.value,10) : firebase.firestore.FieldValue.delete(),
+          [`comments.${sid}`]: commentEl.value.trim()
+        });
+        await syncHomeworkStatusToTracker(taskId, sid, statusSel.value);
+      }catch(e){ console.error(e); }
+      btn.disabled = false; btn.textContent = originalLabel;
+    });
+  });
 }
-document.getElementById('addListenBtn').addEventListener('click', async ()=>{
-  const errEl = document.getElementById('listenError');
-  const title = document.getElementById('newListenTitle').value.trim();
-  const body = document.getElementById('newListenBody').value.trim();
-  const link = document.getElementById('newListenLink').value.trim();
+async function syncHomeworkStatusToTracker(taskId, sid, status){
+  try{
+    const taskSnap = await db.collection('homeworkTasks').doc(taskId).get();
+    const task = taskSnap.data();
+    if(task && task.lessonEntryId){
+      await updateLessonEntry(task.lessonEntryId, { homework: status });
+    }
+  }catch(e){ console.error('sync tracker failed', e); }
+}
+document.getElementById('addHwBtn').addEventListener('click', async ()=>{
+  const errEl = document.getElementById('hwError');
+  const title = document.getElementById('newHwTitle').value.trim();
+  const body = document.getElementById('newHwBody').value.trim();
+  const link = document.getElementById('newHwLink').value.trim();
+  const deadline = document.getElementById('newHwDeadline').value;
   if(!title || !body){ errEl.textContent = 'Заполните заголовок и описание.'; return; }
   errEl.textContent = '';
-  try{ await db.collection('listeningTasks').add({ title, body, link }); }
+  const studentIds = getCheckedStudentIds('hwStudentChecks');
+  try{ await db.collection('homeworkTasks').add({ title, body, link, deadline, studentIds, lessonEntryId:null, statuses:{}, grades:{}, comments:{}, createdAt: Date.now() }); }
   catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
-  document.getElementById('newListenTitle').value = '';
-  document.getElementById('newListenBody').value = '';
-  document.getElementById('newListenLink').value = '';
-  await renderTasksAdmin();
-});
-document.getElementById('addReadBtn').addEventListener('click', async ()=>{
-  const errEl = document.getElementById('readError');
-  const title = document.getElementById('newReadTitle').value.trim();
-  const body = document.getElementById('newReadBody').value.trim();
-  const link = document.getElementById('newReadLink').value.trim();
-  if(!title || !body){ errEl.textContent = 'Заполните заголовок и текст.'; return; }
-  errEl.textContent = '';
-  try{ await db.collection('readingTasks').add({ title, body, link }); }
-  catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
-  document.getElementById('newReadTitle').value = '';
-  document.getElementById('newReadBody').value = '';
-  document.getElementById('newReadLink').value = '';
-  await renderTasksAdmin();
-});
-document.getElementById('addWriteBtn').addEventListener('click', async ()=>{
-  const errEl = document.getElementById('writeError');
-  const title = document.getElementById('newWriteTitle').value.trim();
-  const body = document.getElementById('newWriteBody').value.trim();
-  const link = document.getElementById('newWriteLink').value.trim();
-  if(!title || !body){ errEl.textContent = 'Заполните заголовок и описание.'; return; }
-  errEl.textContent = '';
-  try{ await db.collection('writingTasks').add({ title, body, link }); }
-  catch(e){ console.error(e); errEl.textContent = 'Не удалось сохранить.'; return; }
-  document.getElementById('newWriteTitle').value = '';
-  document.getElementById('newWriteBody').value = '';
-  document.getElementById('newWriteLink').value = '';
+  document.getElementById('newHwTitle').value = '';
+  document.getElementById('newHwBody').value = '';
+  document.getElementById('newHwLink').value = '';
+  document.getElementById('newHwDeadline').value = '';
   await renderTasksAdmin();
 });
 </script>
