@@ -1003,29 +1003,29 @@ const db = firebase.firestore();
 const SUPABASE_URL = "https://ywsvwailduynwdflcgfj.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3c3Z3YWlsZHV5bndkZmxjZ2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMTEzNDAsImV4cCI6MjEwMzc4NzM0MH0.m-kZzU2UWbZ_ZUEyvyuaoKx_W1ie2Rm7p4ouihBAhCQ";
 const SUPABASE_BUCKET = "materials"; // имя бакета — создайте его в Supabase Storage перед первой загрузкой
-let supabase = null;
+let sbClient = null;
 try{
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }catch(e){
   console.error('Не удалось инициализировать Supabase (загрузка файлов будет недоступна):', e);
 }
 
 async function uploadFileToSupabase(file, folder, onStatus){
   if(!file) return null;
-  if(!supabase){
+  if(!sbClient){
     if(onStatus) onStatus('Хранилище файлов недоступно, обновите страницу.');
     return null;
   }
   const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
   const path = `${folder}/${Date.now()}-${safeName}`;
   if(onStatus) onStatus('Загрузка файла...');
-  const { data, error } = await supabase.storage.from(SUPABASE_BUCKET).upload(path, file, { upsert:false });
+  const { data, error } = await sbClient.storage.from(SUPABASE_BUCKET).upload(path, file, { upsert:false });
   if(error){
     console.error('supabase upload failed', error);
     if(onStatus) onStatus('Ошибка загрузки: ' + error.message);
     return null;
   }
-  const { data: pub } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(data.path);
+  const { data: pub } = sbClient.storage.from(SUPABASE_BUCKET).getPublicUrl(data.path);
   if(onStatus) onStatus('');
   return pub.publicUrl;
 }
